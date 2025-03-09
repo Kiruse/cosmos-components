@@ -1,0 +1,11 @@
+{
+  "imports": {
+    "@apophis-sdk/core": "https://esm.sh/@apophis-sdk/core",
+    "@apophis-sdk/cosmos": "https://esm.sh/@apophis-sdk/cosmos",
+    "@apophis-sdk/cosmwasm": "https://esm.sh/@apophis-sdk/cosmwasm",
+    "@kiruse/marshal": "https://esm.sh/@kiruse/marshal",
+    "@preact/signals": "https://esm.sh/@preact/signals",
+    "preact": "https://esm.sh/preact",
+    "zod": "https://esm.sh/zod"
+  }
+}

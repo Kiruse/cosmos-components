@@ -1,0 +1,8 @@
+doctype html
+html
+  head
+    title Cosmos Components Demo
+    script(type="importmap")!= JSON.stringify(importmap)
+    script(type="module" src="/dist/index.js")
+  body
+    cosmos-address(value="cosmos1qyqszqgpqyqszqgpqyqszqgpqyqszqgp" bech32prefix="cosmos")

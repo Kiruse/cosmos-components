@@ -1,0 +1,35 @@
+{
+  "name": "@kiruse/cosmos-components",
+  "type": "module",
+  "version": "0.0.1",
+  "description": "Kiru's Cosmos Web3 Components",
+  "keywords": ["cosmos", "web3", "components", "web components", "blockchain", "dapp", "frontend", "vanilla", "esm"],
+  "author": "Kiruse",
+  "license": "MIT",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "dev": "bun run dev.coffee",
+    "build": "tsc",
+    "prepack": "bun run build"
+  },
+  "dependencies": {
+    "@apophis-sdk/core": "^0.2.0-fix.1",
+    "@apophis-sdk/cosmos": "^0.2.0-fix.1",
+    "@apophis-sdk/cosmwasm": "^0.2.0-fix.1",
+    "@kiruse/marshal": "^0.2.0-rc.1",
+    "@preact/signals": "^2.0.1",
+    "preact": "^10.26.4",
+    "zod": "^3.24.2"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "@types/pug": "^2.0.10",
+    "bun-coffeescript": "^1.0.3",
+    "chokidar": "^4.0.3",
+    "pug": "^3.0.3"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  }
+}
