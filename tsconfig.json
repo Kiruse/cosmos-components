@@ -5,6 +5,7 @@
     "module": "NodeNext",
     "moduleDetection": "force",
     "moduleResolution": "NodeNext",
+    "declaration": true,
     "jsx": "react-jsx",
     "jsxImportSource": "preact",
     "allowJs": true,
@@ -16,7 +17,7 @@
     "noPropertyAccessFromIndexSignature": false,
     "rootDir": "src",
     "outDir": "dist",
-    "allowSyntheticDefaultImports": true
+    "allowSyntheticDefaultImports": true,
   },
   "include": ["src/"],
 }

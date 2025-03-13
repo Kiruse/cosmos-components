@@ -38,10 +38,42 @@ You may also load it directly in your browser to write a plain HTML/CSS/JS websi
 This makes it easy to get started prototyping Dapps while retaining the possibility of migrating to any more complex frontend framework of your choice!
 
 ## Components
-Following is a list of all components registered by this library:
+The components are documented with storybook: https://cosmos-components.kiruse.dev
 
-- `cosmos-address` is a utlity to standardize display of lengthy Web3 addresses. It also supports aliasing through various sources of custom address books!
+## Signals
+I really like [Signals](https://preactjs.com/guide/v10/signals/). You can pass signals to the web components' properties (not attributes!) to have the component use them directly and benefit from performance improvements. Simultaneously, signals can also be used to pass values back out of the web components, as opposed to using event listeners. This can simplify your processes.
+
+However, take caution not to switch between usage of signals or no usage of signals, as internal component state will desync.
+
+## Contributing & Building
+The build process consists of three parts:
+
+1. Library
+2. Metadata & Type Declarations
+3. Storybook
+
+All can be triggered with the `bun run build` and `bun dev` commands.
+
+We generate metadata & type declarations from exports of components in the `src/stories` folder. For simplicity, all components must follow the following pattern:
+
+```ts
+import { css, defineComponent } from '../webcomp.js';
+
+export const Component = defineComponent({
+  name: 'component',
+  attrs: {
+    // define attrs here
+  },
+  render: ({ attrs }) => {
+    // render the component
+  },
+  css: css`// stylesheet`,
+});
+```
+
+If the component does not follow this pattern, the build script will fail to detect it.
 
 ## Roadmap
 - [ ] More components
 - [ ] Build script for .d.ts from sources for JSX support
+- [ ] Build script for [`custom-elements.json` metadata](https://github.com/webcomponents/custom-elements-manifest)

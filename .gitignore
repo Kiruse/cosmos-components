@@ -1,7 +1,10 @@
 .vscode/
 dist/
 node_modules/
+storybook-static/
 tmp/
 .env
 .env.local
 .env.*.local
+
+*storybook.log
