@@ -1,9 +1,10 @@
 import type { StorybookConfig } from '@storybook/web-components-vite';
+import path from 'path';
 
 const config: StorybookConfig = {
   "stories": [
-    "../src/**/*.mdx",
-    "../src/**/*.stories.@(js|jsx|mjs|ts|tsx)"
+    "../src/stories/**/*.mdx",
+    "../src/stories/**/*.stories.@(js|jsx|mjs|ts|tsx)",
   ],
   "addons": [
     "@storybook/addon-essentials",
@@ -13,6 +14,18 @@ const config: StorybookConfig = {
   "framework": {
     "name": "@storybook/web-components-vite",
     "options": {}
-  }
+  },
+  "viteFinal": async (config) => {
+    return {
+      ...config,
+      resolve: {
+        ...config.resolve,
+        alias: {
+          ...config.resolve?.alias,
+          '~': path.resolve(import.meta.dirname, '../src'),
+        },
+      },
+    };
+  },
 };
 export default config;

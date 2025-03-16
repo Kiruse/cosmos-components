@@ -49,7 +49,7 @@ However, take caution not to switch between usage of signals or no usage of sign
 The build process consists of three parts:
 
 1. Library
-2. Metadata & Type Declarations
+2. Metadata for IDE & tooling integrations + JSX Type Declarations
 3. Storybook
 
 All can be triggered with the `bun run build` and `bun dev` commands.
@@ -71,9 +71,11 @@ export const Component = defineComponent({
 });
 ```
 
-If the component does not follow this pattern, the build script will fail to detect it.
+If the component does not follow this pattern, the build script may fail to detect it.
 
 ## Roadmap
 - [ ] More components
-- [ ] Build script for .d.ts from sources for JSX support
-- [ ] Build script for [`custom-elements.json` metadata](https://github.com/webcomponents/custom-elements-manifest)
+- [x] Build script for .d.ts from sources for JSX support
+- [ ] Build script for [`custom-data.json` metadata for VSCode](https://github.com/microsoft/vscode-custom-data/tree/main/samples/webcomponents) + VSCode extension
+
+Originally, my motivation for integrating this proposed manifest was to automate properties controls generation in Storybook. Instead, I will now simply generate the entire story code for every component based on the components & zod schemas directly.
