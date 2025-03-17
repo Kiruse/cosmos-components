@@ -16,7 +16,7 @@ export type AttrDefinition = Record<string, zod.ZodSchema>;
 export interface WebComponentOptions<T extends AttrDefinition> {
   name: string;
   attrs?: T;
-  render: ComponentType<{ self: HTMLElement, attrs: AttrSignals<T> }>;
+  render: ComponentType<{ self: HTMLElement, attrs: AttrSignals<T>, extraAttrs: any }>;
   css?: string;
   /** General purpose unmarshal function for attributes */
   unmarshal?(value: any): any;
@@ -49,11 +49,12 @@ export function defineComponent<T extends AttrDefinition>({
   unmarshal = defaultMarshaller.unmarshal,
   ...props
 }: WebComponentOptions<T>) {
-  const attrs = wrapAttrs<T>(props.attrs);
-  const extraAttrs = {} as any;
+  const attrsDesc: Exclude<T, undefined> = props.attrs ?? {} as any;
 
   class Component extends HTMLElement {
-    static observedAttributes = Object.keys(attrs);
+    static observedAttributes = Object.keys(attrsDesc);
+    #attrs = {} as Attrs<T>;
+    #extraAttrs = {} as any;
 
     connectedCallback() {
       this.parseAttrs();
@@ -75,21 +76,22 @@ export function defineComponent<T extends AttrDefinition>({
 
     /** Parse attributes & properties on the element. */
     parseAttrs() {
-      // TODO: if the prop is a signal, we should use that signal instead of ours
-      for (const attr in attrs) {
+      for (const attr in attrsDesc) {
         const value = (this as any)[attr] ?? this.getAttribute(attr) ?? undefined;
+        //@ts-ignore
+        this.#attrs[attr] = wrapAttr(attrsDesc[attr], value);
         this.updateAttr(attr, value);
       }
     }
 
     updateAttr(name: string, value: unknown) {
-      if (!(name in attrs)) {
-        extraAttrs[name] = value;
+      if (!(name in attrsDesc)) {
+        this.#extraAttrs[name] = value;
         return;
       }
 
-      const attr = attrs[name as keyof T];
-      let schema = attrs[name as keyof T].schema;
+      const attr = this.#attrs[name as keyof T];
+      let schema = attr.schema;
       if (schema instanceof zod.ZodOptional) {
         schema = schema._def.innerType;
       }
@@ -111,8 +113,8 @@ export function defineComponent<T extends AttrDefinition>({
     }
 
     render() {
-      const attrSignals = Object.fromEntries(Object.entries(attrs).map(([key, value]) => [key, value.signal])) as AttrSignals<T>;
-      render(h(props.render, { self: this, attrs: attrSignals }), this);
+      const attrSignals = Object.fromEntries(Object.entries(this.#attrs).map(([key, value]) => [key, value.signal])) as AttrSignals<T>;
+      render(h(props.render, { self: this, attrs: attrSignals, extraAttrs: this.#extraAttrs }), this);
     }
   }
 
@@ -148,17 +150,11 @@ export const css = (strings: TemplateStringsArray, ...values: any[]) => {
   return strings.map((str, i) => `${str}${values[i] || ''}`).join('');
 }
 
-function wrapAttrs<T extends AttrDefinition>(attrs: T | undefined) {
-  if (!attrs) return {} as any as Attrs<T>;
-  return Object.fromEntries(Object.entries(attrs).map(
-    ([key, value]) => [
-      key,
-      {
-        signal: signal(undefined),
-        schema: value,
-      },
-    ],
-  )) as Attrs<T>;
+function wrapAttr<T>(schema: zod.ZodSchema, initialValue: T | Signal<T>) {
+  return {
+    signal: isSignalish(initialValue) ? initialValue : signal(initialValue),
+    schema,
+  };
 }
 
 const getFirstStyleElem = () => document.head.querySelector('style') ?? document.head.querySelector('link[rel="stylesheet"]');
