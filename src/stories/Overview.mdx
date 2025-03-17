@@ -1,0 +1,11 @@
+import { toast } from './toast.js';
+
+## Toast
+
+Currently, Cosmos Components use our own Toast implementation. In the future,
+we will allow specifying an alternative Toast implementation for consistency
+across different systems. Click the button below to spawn a new toast.
+
+<button
+  onClick={() => toast.info({ message: 'This is an informational toast.' })}
+>Spawn toast</button>

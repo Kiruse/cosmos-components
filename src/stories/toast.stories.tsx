@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/web-components';
 import { getArgTypes } from '~/story-helpers.js';
 import { ComponentAttributes } from '~/webcomp.js';
-import { Toast } from './toast.js';
+import { toast, Toast } from './toast.js';
 
 const meta: Meta<ComponentAttributes<typeof Toast>> = {
   component: 'cosmos-toast',

@@ -150,6 +150,34 @@ export const css = (strings: TemplateStringsArray, ...values: any[]) => {
   return strings.map((str, i) => `${str}${values[i] || ''}`).join('');
 }
 
+/** Animation helper. Immediately pauses the animation after creation.
+ * The `.play()` method returns a promise that resolves when the animation finishes.
+ * Animations also use `fill: forwards` by default.
+ */
+export function animate(el: HTMLElement, keyframes: Keyframe[] | PropertyIndexedKeyframes | null, options: KeyframeAnimationOptions = {}) {
+  const anim = el.animate(keyframes, { fill: 'forwards', ...options });
+  anim.pause();
+  return {
+    play: () => {
+      anim.play();
+      return new Promise<void>((resolve, reject) => {
+        anim.onfinish = () => resolve();
+        anim.oncancel = () => reject(new Error('Animation cancelled'));
+      });
+    },
+    pause: () => anim.pause(),
+    reverse: () => {
+      anim.reverse();
+      return new Promise<void>((resolve, reject) => {
+        anim.onfinish = () => resolve();
+        anim.oncancel = () => reject(new Error('Animation cancelled'));
+      });
+    },
+    finish: () => anim.finish(),
+    cancel: () => anim.cancel(),
+  };
+}
+
 function wrapAttr<T>(schema: zod.ZodSchema, initialValue: T | Signal<T>) {
   return {
     signal: isSignalish(initialValue) ? initialValue : signal(initialValue),

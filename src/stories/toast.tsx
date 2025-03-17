@@ -1,6 +1,7 @@
 import { useComputed, useSignalEffect } from "@preact/signals";
 import { z } from "zod";
-import { ComponentAttributes, css, defineComponent } from "../webcomp.js";
+import { animate, ComponentAttributes, css, defineComponent } from "../webcomp.js";
+import { useEffect } from "preact/hooks";
 
 type ToastAttrs = ComponentAttributes<typeof Toast>;
 
@@ -28,21 +29,38 @@ export const Toast = defineComponent({
     useSignalEffect(() => {
       self.classList.remove('success', 'error', 'warning', 'info');
       self.classList.add(variant.value ?? 'info');
-
-      if (lifespan.value && lifespan.value !== Infinity) {
-        setTimeout(() => {
-          self.remove();
-        }, lifespan.value * 1000);
-      }
+      self.style.setProperty('--cosmos-toast-lifespan', `${lifespan.value ?? 5}s`);
     });
+
+    useEffect(() => {
+      const lifespanEl = self.querySelector('.cosmos-toast-lifespan') as HTMLElement;
+      if (!lifespanEl) return;
+      (async () => {
+        const fadeAnim = animate(self, [
+          { opacity: 0, transform: 'scale(0.9)' },
+          { opacity: 1, transform: 'scale(1)' },
+        ], { duration: 200 });
+        await fadeAnim.play();
+
+        await animate(lifespanEl, [
+          { transform: 'scaleX(1)' },
+          { transform: 'scaleX(0)' },
+        ], { duration: (lifespan.value ?? 5) * 1000 }).play();
+
+        await fadeAnim.reverse();
+        self.remove();
+      })();
+    }, []);
 
     return (
       <>
         <div class="cosmos-toast-title">{typeof title.value === 'string' ? <h3>{title.value}</h3> : title.value}</div>
         <div class="cosmos-toast-message">{message}</div>
+        <div class="cosmos-toast-lifespan" />
       </>
     );
   },
+
   css: css`
     #cosmos-toast-container {
       display: flex;
@@ -88,6 +106,33 @@ export const Toast = defineComponent({
       &.warn {
         --cosmos-toast-line-color: #FF9800;
       }
+
+      .cosmos-toast-lifespan {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: var(--cosmos-toast-line-color);
+      }
+    }
+
+    @keyframes cosmos-toast-fade {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+
+    @keyframes cosmos-toast-lifespan {
+      0% {
+        transform: scaleX(1);
+      }
+      100% {
+        transform: scaleX(0);
+      }
     }
   `,
 });
@@ -95,6 +140,7 @@ export const Toast = defineComponent({
 export namespace toast {
   export function show(attrs: ToastAttrs) {
     const toast = document.createElement('cosmos-toast');
+    Object.assign(toast, attrs);
     let container = document.getElementById('cosmos-toast-container');
     if (!container) {
       container = document.createElement('div');
@@ -103,6 +149,11 @@ export namespace toast {
     }
     container.appendChild(toast);
   }
+
+  export const info = (attrs: Omit<ToastAttrs, 'variant'>) => show({ ...attrs, variant: 'info' });
+  export const success = (attrs: Omit<ToastAttrs, 'variant'>) => show({ ...attrs, variant: 'success' });
+  export const error = (attrs: Omit<ToastAttrs, 'variant'>) => show({ ...attrs, variant: 'error' });
+  export const warn = (attrs: Omit<ToastAttrs, 'variant'>) => show({ ...attrs, variant: 'warn' });
 }
 
 if (typeof window !== 'undefined') {
