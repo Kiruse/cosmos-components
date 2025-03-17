@@ -1,12 +1,11 @@
 import type { Meta, StoryObj } from '@storybook/web-components';
-import _ from 'lodash';
 import { Address, AddressAttributes } from './address.js';
 import { getArgTypes } from '~/story-helpers.js';
 
 const meta: Meta<AddressAttributes> = {
   component: 'cosmos-address',
   tags: ['autodocs'],
-  argTypes: _.merge(getArgTypes(Address), {
+  argTypes: getArgTypes(Address, {
     value: {
       description: 'The actual address value.',
     },

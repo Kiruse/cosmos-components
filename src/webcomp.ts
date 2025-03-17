@@ -16,7 +16,7 @@ export type AttrDefinition = Record<string, zod.ZodSchema>;
 export interface WebComponentOptions<T extends AttrDefinition> {
   name: string;
   attrs?: T;
-  render: ComponentType<{ attrs: AttrSignals<T> }>;
+  render: ComponentType<{ self: HTMLElement, attrs: AttrSignals<T> }>;
   css?: string;
   /** General purpose unmarshal function for attributes */
   unmarshal?(value: any): any;
@@ -89,10 +89,15 @@ export function defineComponent<T extends AttrDefinition>({
       }
 
       const attr = attrs[name as keyof T];
-      const isStringSchema = attr.schema instanceof zod.ZodString;
-      const isOptionalStringSchema = attr.schema instanceof zod.ZodOptional && attr.schema._def.innerType instanceof zod.ZodString;
+      let schema = attrs[name as keyof T].schema;
+      if (schema instanceof zod.ZodOptional) {
+        schema = schema._def.innerType;
+      }
 
-      if (typeof value === 'string' && !(isStringSchema || isOptionalStringSchema)) {
+      const isStringSchema = schema instanceof zod.ZodString;
+      const isEnumSchema = schema instanceof zod.ZodEnum;
+
+      if (typeof value === 'string' && !(isStringSchema || isEnumSchema)) {
         value = unmarshal(JSON.parse(value));
       }
 
@@ -107,7 +112,7 @@ export function defineComponent<T extends AttrDefinition>({
 
     render() {
       const attrSignals = Object.fromEntries(Object.entries(attrs).map(([key, value]) => [key, value.signal])) as AttrSignals<T>;
-      render(h(props.render, { attrs: attrSignals }), this);
+      render(h(props.render, { self: this, attrs: attrSignals }), this);
     }
   }
 

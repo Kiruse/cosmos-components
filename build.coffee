@@ -17,7 +17,6 @@ global.HTMLElement = HTMLElement
 global.customElements = window.customElements
 
 debug = false
-storiesTpl = await fs.readFile 'assets/template.stories.ts', 'utf8'
 
 parse = (code, filepath) ->
   parseBabel code,
@@ -99,10 +98,4 @@ if process.argv[1] is import.meta.filename
     chokidar.watch('src/stories').on 'change', ->
       await buildMeta()
       console.log 'Built metadata'
-    chokidar.watch('assets/template.stories.ts').on 'change', ->
-      console.log 'Stories template changed, rebuilding stories'
-      storiesTpl = await fs.readFile 'assets/template.stories.ts', 'utf8'
-      modules = await getModules()
-      await buildStorybookStories modules
-      console.log 'Built stories'
     console.log 'Watching for changes in src/stories'

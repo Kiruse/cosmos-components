@@ -1,14 +1,34 @@
 import { z } from "zod";
-import { ComponentAttributesSchema, ComponentDefinition } from "./webcomp.js";
+import { AttrDefinition, ComponentDefinition } from "./webcomp.js";
 
-export function getArgTypes<Component extends ComponentDefinition<any>>(component: Component) {
+type ArgTypes<T extends AttrDefinition> = {
+  [K in keyof T]?: {
+    type?: string;
+    description?: string;
+    defaultValue?: z.infer<T[K]>;
+  };
+};
+
+export function getArgTypes<Component extends ComponentDefinition<any>>(component: Component, extra: ArgTypes<Component['attrs']> = {}) {
   return Object.fromEntries(Object.entries(component.attrs ?? {}).map(([key, schema]) => {
     if (schema instanceof z.ZodOptional) {
       schema = schema._def.innerType;
     }
+
+    let type = 'text';
+
     if (schema instanceof z.ZodNumber) {
-      return [key, { type: 'number' }];
+      type = 'number';
+    } else if (schema instanceof z.ZodBoolean) {
+      type = 'boolean';
     }
-    return [key, { type: 'text' }];
+
+    return [
+      key,
+      {
+        type,
+        ...extra[key],
+      },
+    ];
   }));
 }

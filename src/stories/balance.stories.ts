@@ -1,5 +1,4 @@
 import type { Meta, StoryObj } from '@storybook/web-components';
-import _ from 'lodash';
 import { Balance } from './balance.js';
 import { getArgTypes } from '~/story-helpers.js';
 import { ComponentAttributes } from '~/webcomp.js';
@@ -7,7 +6,7 @@ import { ComponentAttributes } from '~/webcomp.js';
 const meta: Meta<ComponentAttributes<typeof Balance>> = {
   component: 'cosmos-balance',
   tags: ['autodocs'],
-  argTypes: _.merge(getArgTypes(Balance), {
+  argTypes: getArgTypes(Balance, {
     value: {
       description: 'Required. The balance value to display.',
     },
