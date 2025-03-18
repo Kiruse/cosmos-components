@@ -1,4 +1,24 @@
-import { toast } from './toast.js';
+import '..';
+
+# Overview
+Kiru's Cosmos Components are a collection of web components that I use to build
+my Web3 Dapps for the Cosmos blockchain ecosystem. These components are designed
+to be used to jumpstart the creation of new Dapps with as little effort as possible.
+
+However, it is still an early work in progress, and only few components have
+been implemented. This page serves as a quick overview of the available components.
+
+## Address
+The `cosmos-address` component serves as a standardized way to display Web3
+addresses. It shows truncated addresses with customizable truncation length,
+shows a tooltip with the full address, and allows copying the address to the
+user's clipboard.
+
+<cosmos-address value="neutron1r5m978tlcuuuvmaw6xqdj2k2qpv5myxwxpssvt" bech32prefix="neutron" />
+
+```tsx
+<cosmos-address value="neutron1r5m978tlcuuuvmaw6xqdj2k2qpv5myxwxpssvt" bech32prefix="neutron" />
+```
 
 ## Toast
 
@@ -7,5 +27,15 @@ we will allow specifying an alternative Toast implementation for consistency
 across different systems. Click the button below to spawn a new toast.
 
 <button
-  onClick={() => toast.info({ message: 'This is an informational toast.' })}
+  onClick={() => toast.info('This is an informational toast.')}
 >Spawn toast</button>
+
+```tsx
+<button onClick={() => toast.info('This is an informational toast.')}>Spawn toast</button>
+```
+
+These web components are built on the Shadow DOM. Thus, proper integration with
+your framework may be non-trivial. Most modern frameworks build on a VDOM, which
+is not directly compatible with the Shadow DOM. If you need to provide content
+to the Toast that is not just a simple string, you probably want to build a
+helper for your framework.

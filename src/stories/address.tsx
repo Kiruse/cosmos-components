@@ -1,7 +1,8 @@
 import { trimAddress } from "@apophis-sdk/core";
 import { useComputed } from "@preact/signals";
 import { z } from "zod";
-import { ComponentAttributes, css, defineComponent } from "../webcomp.js";
+import { useTooltip } from "~/internals.js";
+import { ComponentAttributes, css, defineComponent } from "~/webcomp.js";
 
 export type AddressAttributes = ComponentAttributes<typeof Address>;
 
@@ -12,7 +13,7 @@ export const Address = defineComponent({
     bech32prefix: z.optional(z.string()),
     trimsize: z.optional(z.number()),
   },
-  render({ attrs: { bech32prefix, ...attrs } }) {
+  render({ self, attrs: { bech32prefix, ...attrs } }) {
     const value = useComputed(() => {
       let val = attrs.value.value;
       const prefix = bech32prefix.value ?? '';
@@ -23,21 +24,28 @@ export const Address = defineComponent({
       return val;
     });
 
+    useTooltip(self, <span>{attrs.value}</span>);
+
     return (
-      <span class="cosmos-address" onClick={() => {
-        navigator.clipboard.writeText(attrs.value.value);
-      }}>
-        {value}
-      </span>
+      <>
+        <style>{css`
+          :host {
+            display: inline-block;
+            font-family: monospace;
+            text-decoration-line: underline;
+            text-decoration-style: dotted;
+            cursor: pointer;
+          }
+        `}</style>
+        <span onClick={() => {
+          navigator.clipboard.writeText(attrs.value.value);
+        }}>
+          {value}
+        </span>
+        <template id="tooltip">
+          <span>{attrs.value}</span>
+        </template>
+      </>
     );
   },
-  css: css`
-    cosmos-address {
-      display: inline-block;
-      font-family: var(--cosmos-font-monospace, monospace);
-      text-decoration-line: underline;
-      text-decoration-style: dotted;
-      cursor: pointer;
-    }
-  `,
 });

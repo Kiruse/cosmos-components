@@ -40,6 +40,8 @@ This makes it easy to get started prototyping Dapps while retaining the possibil
 ## Components
 The components are documented with storybook: https://cosmos-components.kiruse.dev
 
+Cosmos Components makes extensive use of the Shadow DOM. The Storybook above documents the various customization options available.
+
 ## Signals
 I really like [Signals](https://preactjs.com/guide/v10/signals/). You can pass signals to the web components' properties (not attributes!) to have the component use them directly and benefit from performance improvements. Simultaneously, signals can also be used to pass values back out of the web components, as opposed to using event listeners. This can simplify your processes.
 
@@ -72,6 +74,8 @@ export const Component = defineComponent({
 ```
 
 If the component does not follow this pattern, the build script may fail to detect it.
+
+The `css` tagged literal does nothing, really. You might as well just pass a string. However, it is useful for syntax highlighting & intellisense, e.g. with [Lit for VSCode](https://marketplace.visualstudio.com/items?itemName=runem.lit-plugin).
 
 ## Roadmap
 - [ ] More components

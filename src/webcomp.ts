@@ -15,8 +15,11 @@ export type AttrDefinition = Record<string, zod.ZodSchema>;
 
 export interface WebComponentOptions<T extends AttrDefinition> {
   name: string;
-  attrs?: T;
+  attrs: T;
+  /** Whether to use the Shadow DOM. Defaults to `'open'`. Set to `'none'` to disable the Shadow DOM, but beware of CSS scoping issues. */
+  shadow?: 'none' | 'open' | 'closed';
   render: ComponentType<{ self: HTMLElement, attrs: AttrSignals<T>, extraAttrs: any }>;
+  /** When not using the Shadow DOM, you can use the `css` option to inject CSS into the document head. */
   css?: string;
   /** General purpose unmarshal function for attributes */
   unmarshal?(value: any): any;
@@ -36,33 +39,49 @@ type Attrs<T extends AttrDefinition> = {
 export type ComponentDefinition<T extends AttrDefinition> = {
   name: string;
   Component: Ctor;
-  attrs?: T;
+  attrs: T;
 }
 
 export type ComponentAttributesSchema<T extends ComponentDefinition<any>> = T['attrs'];
-export type ComponentAttributes<T extends ComponentDefinition<any>> = {
+export type ComponentAttributes<T extends ComponentDefinition<any>> = Optionalize<{
   [K in keyof T['attrs']]: zod.infer<T['attrs'][K]> | Signal<zod.infer<T['attrs'][K]>>;
-};
+}>;
+
+type Optionalize<T> =
+  & { [K in PickUndefined<T>]?: T[K]; }
+  & { [K in PickDefined<T>]: T[K]; };
+
+type PickUndefined<T> = {
+  [K in keyof T]: undefined extends T[K] ? K : never;
+}[keyof T];
+
+type PickDefined<T> = {
+  [K in keyof T]: undefined extends T[K] ? never : K;
+}[keyof T];
 
 export function defineComponent<T extends AttrDefinition>({
   name,
   unmarshal = defaultMarshaller.unmarshal,
-  ...props
+  ...options
 }: WebComponentOptions<T>) {
-  const attrsDesc: Exclude<T, undefined> = props.attrs ?? {} as any;
+  const attrsDesc: T = options.attrs ?? {} as any;
 
   class Component extends HTMLElement {
     static observedAttributes = Object.keys(attrsDesc);
-    #attrs = {} as Attrs<T>;
+    #attrs: Attrs<T>;
     #extraAttrs = {} as any;
+
+    constructor() {
+      super();
+      this.#attrs = Object.fromEntries(Object.entries(attrsDesc).map(([key, schema]) => [key, wrapAttr(schema, undefined)])) as Attrs<T>;
+    }
 
     connectedCallback() {
       this.parseAttrs();
       this.render();
     }
-
     disconnectedCallback() {
-      render(null, this); // properly dismount
+      render(null, options.shadow === 'none' ? this : this.shadowRoot!); // properly dismount
     }
 
     adoptedCallback() {
@@ -114,7 +133,14 @@ export function defineComponent<T extends AttrDefinition>({
 
     render() {
       const attrSignals = Object.fromEntries(Object.entries(this.#attrs).map(([key, value]) => [key, value.signal])) as AttrSignals<T>;
-      render(h(props.render, { self: this, attrs: attrSignals, extraAttrs: this.#extraAttrs }), this);
+      // MEMO: render will be deprecated in v11
+      // refer to https://gist.github.com/developit/f4c67a2ede71dc2fab7f357f39cff28c when it becomes time to upgrade
+      render(
+        h(options.render, { self: this, attrs: attrSignals, extraAttrs: this.#extraAttrs }),
+        options.shadow === 'none'
+          ? this
+          : this.attachShadow({ mode: options.shadow ?? 'open' }),
+      );
     }
   }
 
@@ -122,9 +148,9 @@ export function defineComponent<T extends AttrDefinition>({
   customElements.define(name, Component);
 
   // TODO: use signals to detect changes?
-  if (props.css) {
+  if (options.css) {
     const style = document.createElement('style');
-    style.textContent = props.css ?? '';
+    style.textContent = options.css ?? '';
     const firstStyleElem = getFirstStyleElem();
     if (firstStyleElem) {
       document.head.insertBefore(style, firstStyleElem);
@@ -138,7 +164,7 @@ export function defineComponent<T extends AttrDefinition>({
     /** Generated web component class. This class has already been registered with `customElements.define`. */
     Component,
     /** Attributes schema of the component. */
-    attrs: props.attrs,
+    attrs: options.attrs,
   } satisfies ComponentDefinition<T>;
 }
 
@@ -186,4 +212,4 @@ function wrapAttr<T>(schema: zod.ZodSchema, initialValue: T | Signal<T>) {
 }
 
 const getFirstStyleElem = () => document.head.querySelector('style') ?? document.head.querySelector('link[rel="stylesheet"]');
-const isSignalish = (value: any): value is Signal<any> => typeof value === 'object' && 'value' in value && typeof value.subscribe === 'function' && typeof value.peek === 'function';
+export const isSignalish = (value: any): value is Signal<any> => typeof value === 'object' && 'value' in value && typeof value.subscribe === 'function' && typeof value.peek === 'function';

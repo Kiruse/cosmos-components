@@ -6,6 +6,7 @@ type ArgTypes<T extends AttrDefinition> = {
     type?: string;
     description?: string;
     defaultValue?: z.infer<T[K]>;
+    options?: readonly any[];
   };
 };
 
@@ -27,6 +28,11 @@ export function getArgTypes<Component extends ComponentDefinition<any>>(componen
       key,
       {
         type,
+        table: {
+          defaultValue: {
+            summary: extra[key]?.defaultValue,
+          },
+        },
         ...extra[key],
       },
     ];

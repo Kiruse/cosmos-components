@@ -14,9 +14,6 @@ const meta: Meta<ComponentAttributes<typeof Toast>> = {
     title: {
       description: 'Toast title. When omitted, corresponds to the variant.',
     },
-    message: {
-      description: 'Toast content.',
-    },
     lifespan: {
       description: 'Toast lifespan in seconds.',
       defaultValue: 5,
@@ -31,7 +28,7 @@ type Story = StoryObj;
 export const Info: Story = {
   args: {
     variant: 'info',
-    message: 'This is an informational toast.',
+    content: 'This is an informational toast.',
     lifespan: Infinity,
   },
 };
@@ -39,7 +36,7 @@ export const Info: Story = {
 export const Success: Story = {
   args: {
     variant: 'success',
-    message: 'This is a success toast.',
+    content: 'This is a success toast.',
     lifespan: Infinity,
   },
 };
@@ -47,7 +44,7 @@ export const Success: Story = {
 export const Error: Story = {
   args: {
     variant: 'error',
-    message: 'This is an error toast.',
+    content: 'This is an error toast.',
     lifespan: Infinity,
   },
 };
@@ -55,7 +52,7 @@ export const Error: Story = {
 export const Warn: Story = {
   args: {
     variant: 'warn',
-    message: 'This is a warning toast.',
+    content: 'This is a warning toast.',
     lifespan: Infinity,
   },
 };
