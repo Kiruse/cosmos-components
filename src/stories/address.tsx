@@ -3,6 +3,7 @@ import { useComputed } from "@preact/signals";
 import { z } from "zod";
 import { useTooltip } from "../internals.js";
 import { ComponentAttributes, css, defineComponent } from "../webcomp.js";
+import { toast } from "./toast.js";
 
 export type AddressAttributes = ComponentAttributes<typeof Address>;
 
@@ -39,6 +40,7 @@ export const Address = defineComponent({
         `}</style>
         <span onClick={() => {
           navigator.clipboard.writeText(attrs.value.value);
+          toast.info('Address copied to clipboard.', {});
         }}>
           {value}
         </span>
