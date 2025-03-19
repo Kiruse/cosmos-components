@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/web-components';
 import { Address, AddressAttributes } from './address.js';
-import { getArgTypes } from '~/story-helpers.js';
+import { getArgTypes } from '../story-helpers.js';
 
 const meta: Meta<AddressAttributes> = {
   component: 'cosmos-address',

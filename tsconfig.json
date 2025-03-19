@@ -18,9 +18,6 @@
     "rootDir": "src",
     "outDir": "dist",
     "allowSyntheticDefaultImports": true,
-    "paths": {
-      "~/*": ["./src/*"],
-    },
   },
   "include": ["src/", ".generated/stories/"],
 }

@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/web-components';
 import { Balance } from './balance.js';
-import { getArgTypes } from '~/story-helpers.js';
-import { ComponentAttributes } from '~/webcomp.js';
+import { getArgTypes } from '../story-helpers.js';
+import { ComponentAttributes } from '../webcomp.js';
 
 const meta: Meta<ComponentAttributes<typeof Balance>> = {
   component: 'cosmos-balance',

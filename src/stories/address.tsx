@@ -1,8 +1,8 @@
 import { trimAddress } from "@apophis-sdk/core";
 import { useComputed } from "@preact/signals";
 import { z } from "zod";
-import { useTooltip } from "~/internals.js";
-import { ComponentAttributes, css, defineComponent } from "~/webcomp.js";
+import { useTooltip } from "../internals.js";
+import { ComponentAttributes, css, defineComponent } from "../webcomp.js";
 
 export type AddressAttributes = ComponentAttributes<typeof Address>;
 
