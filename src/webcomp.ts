@@ -10,6 +10,7 @@ const defaultMarshaller = extendDefaultMarshaller([
 ]);
 
 type Ctor = new (...args: any[]) => HTMLElement;
+type InstanceOf<T> = T extends new (...args: any[]) => infer R ? R : never;
 
 export type AttrDefinition = Record<string, zod.ZodSchema>;
 
@@ -18,11 +19,18 @@ export interface WebComponentOptions<T extends AttrDefinition> {
   attrs: T;
   /** Whether to use the Shadow DOM. Defaults to `'open'`. Set to `'none'` to disable the Shadow DOM, but beware of CSS scoping issues. */
   shadow?: 'none' | 'open' | 'closed';
-  render: ComponentType<{ self: HTMLElement, attrs: AttrSignals<T>, extraAttrs: any }>;
+  render: ComponentType<WebComponentProps<T>>;
   /** When not using the Shadow DOM, you can use the `css` option to inject CSS into the document head. */
   css?: string;
-  /** General purpose unmarshal function for attributes */
+  /** General purpose unmarshal function for attributes. By default, we use my other `@kiruse/marshal` package. */
   unmarshal?(value: any): any;
+}
+
+export interface WebComponentProps<T extends AttrDefinition> {
+  /** Light root or shadow root of this component instance, depending on the `shadow` option passed to `defineComponent`. */
+  self: HTMLElement;
+  attrs: AttrSignals<T>;
+  extraAttrs: any;
 }
 
 export type AttrSignals<T extends AttrDefinition> = {
@@ -41,6 +49,8 @@ export type ComponentDefinition<T extends AttrDefinition> = {
   Component: Ctor;
   attrs: T;
 }
+
+export type CosmosComponent<T extends ComponentDefinition<any>> = InstanceOf<T['Component']>;
 
 export type ComponentAttributesSchema<T extends ComponentDefinition<any>> = T['attrs'];
 export type ComponentAttributes<T extends ComponentDefinition<any>> = Optionalize<{
@@ -90,6 +100,19 @@ export function defineComponent<T extends AttrDefinition>({
     }
 
     attributeChangedCallback(name: string, oldValue: any, newValue: any) {
+      const attr = this.#attrs[name as keyof T];
+      let schema = attr.schema;
+      if (schema instanceof zod.ZodOptional) {
+        schema = schema._def.innerType;
+      }
+
+      const isStringSchema = schema instanceof zod.ZodString;
+      const isEnumSchema = schema instanceof zod.ZodEnum;
+
+      if (typeof newValue === 'string' && !(isStringSchema || isEnumSchema)) {
+        newValue = unmarshal(JSON.parse(newValue));
+      }
+
       this.updateAttr(name, newValue);
     }
 
@@ -110,17 +133,6 @@ export function defineComponent<T extends AttrDefinition>({
       }
 
       const attr = this.#attrs[name as keyof T];
-      let schema = attr.schema;
-      if (schema instanceof zod.ZodOptional) {
-        schema = schema._def.innerType;
-      }
-
-      const isStringSchema = schema instanceof zod.ZodString;
-      const isEnumSchema = schema instanceof zod.ZodEnum;
-
-      if (typeof value === 'string' && !(isStringSchema || isEnumSchema)) {
-        value = unmarshal(JSON.parse(value));
-      }
 
       const parsed = attr.schema.safeParse(value);
       if (!parsed.success) {
@@ -132,15 +144,29 @@ export function defineComponent<T extends AttrDefinition>({
     }
 
     render() {
+      const useShadow = options.shadow !== 'none';
       const attrSignals = Object.fromEntries(Object.entries(this.#attrs).map(([key, value]) => [key, value.signal])) as AttrSignals<T>;
+      const shadowRoot = this.#getShadowRoot();
       // MEMO: render will be deprecated in v11
       // refer to https://gist.github.com/developit/f4c67a2ede71dc2fab7f357f39cff28c when it becomes time to upgrade
       render(
-        h(options.render, { self: this, attrs: attrSignals, extraAttrs: this.#extraAttrs }),
-        options.shadow === 'none'
-          ? this
-          : this.attachShadow({ mode: options.shadow ?? 'open' }),
+        h(options.render, {
+          self: this,
+          attrs: attrSignals,
+          extraAttrs: this.#extraAttrs,
+        }),
+        useShadow ? shadowRoot! : this,
       );
+    }
+
+    override remove() {
+      super.remove();
+      render(null, options.shadow === 'none' ? this : this.shadowRoot!); // properly dismount
+    }
+
+    #getShadowRoot() {
+      if (options.shadow === 'none') return null;
+      return this.shadowRoot ?? this.attachShadow({ mode: options.shadow ?? 'open' });
     }
   }
 

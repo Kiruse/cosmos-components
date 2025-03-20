@@ -20,6 +20,48 @@ user's clipboard.
 <cosmos-address value="neutron1r5m978tlcuuuvmaw6xqdj2k2qpv5myxwxpssvt" bech32prefix="neutron" />
 ```
 
+## Balance
+The `cosmos-balance` component serves as a standardized way to display a
+localized & formatted coin amount with denomination.
+
+<cosmos-balance value="1.23456" denom="NTRN" decimals={3} />
+
+```tsx
+<cosmos-balance value="1.23456" denom="NTRN" decimals={3} />
+```
+
+- `decimals` is the number of decimal places to display, not the number of
+  decimals in the coin.
+
+### Account Balance
+The `cosmos-account-balance` component is an extension of the `cosmos-balance`
+component that fetches the balance of an account from the chain and displays it.
+There are some differences compared to its parent component:
+
+- It takes the registered `denom` rather than the display denom. It then looks
+  up the display denom and its exponent from the chain.
+- It shows a spinner while the balance is loading and no balance has been loaded
+  yet, or a stale state if the balance is available and being refreshed.
+- Has an error state if the balance cannot be fetched, with a retry button
+  and a link to open a modal containing the error details.
+- Has a `kind` attribute to specify the kind of coin: native or cw20.
+
+<cosmos-account-balance
+  account="neutron1r5m978tlcuuuvmaw6xqdj2k2qpv5myxwxpssvt"
+  kind="native"
+  denom="untrn"
+  decimals={3}
+/>
+
+```tsx
+<cosmos-account-balance
+  account="neutron1r5m978tlcuuuvmaw6xqdj2k2qpv5myxwxpssvt"
+  kind="native"
+  denom="untrn"
+  decimals={3}
+/>
+```
+
 ## Toast
 
 Currently, Cosmos Components use our own Toast implementation. In the future,

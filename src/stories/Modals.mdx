@@ -1,0 +1,49 @@
+import { modals } from './modals/modals.js';
+
+# Cosmos Modals
+Cosmos Components come with a small set of pre-built modals to get you started quickly.
+
+## Error Modal
+Display a nicely formatted error message to the user. Can be customized with
+your own formatters.
+
+<button
+  onClick={() => modals.showErrorModal('This is a dummy error')}
+>Show Error Modal</button>
+
+## Wallet Modal
+Prompt the user to connect their wallet. As these components are built on my
+[Apophis SDK](https://github.com/kiruse/apophis-sdk), the modal supports the
+same wallets as the SDK.
+
+<button
+  onClick={() => modals.showWalletModal()}
+>Show Wallet Modal</button>
+
+The `modals.showWalletModal` function returns the modal's custom element
+instance. This element, in turn, exposes two events - `connect` and
+`cancel` - that you can listen to to respond to the user's input.
+
+Alternatively, as it is built on my Apophis SDK, the `signer` signal will
+be populated. Other components of this library also refer to this signal
+and will thus automatically propagate updates.
+
+# Customizing Modals
+Like everything else, modals can be customized with CSS. You can also replace
+individual modals by replacing the respective `modals.show*Modal` function.
+
+Eventually, I plan to introduce a `CosmosComponents` class which will allow
+you to selectively provide your own replacements for certain components. Effectively,
+you will simply register your own `cosmos-modal-wallet` custom element etc.
+
+## Customizing Errors
+The `cosmos-modal-error` component shows formatted error details based on
+the argument passed to the `modals.showErrorModal` function. As this component
+library is built specifically for the Cosmos Web3 ecosystem, it comes preloaded
+with formatters for various common Cosmos SDK errors, such as insufficient
+funds, insufficient gas, account not found, etc.
+
+You can add your own formatters by calling the `formatError.addFormatter`
+function. Custom formatters are expected to either return a string, an
+`HTMLElement`, or `undefined`. The first custom formatter that returns a
+non-`undefined` value will be used to display the error.

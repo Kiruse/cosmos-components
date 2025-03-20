@@ -8,6 +8,7 @@ Cosmos Components are built with various design tokens as CSS variables
 aka. custom properties. These are:
 
 - `--cosmos-bg-panel`: Background color of panels (e.g. tooltips, modals, etc.). Defaults to `rgb(49, 48, 54)`.
+- `--cosmos-color-line`: Color of lines (e.g. modal borders). Defaults to `rgb(67, 66, 73)`.
 - `--cosmos-spacing`: Base spacing unit. Defaults to `8px`.
 - `--cosmos-roundness`: Base border radius. Defaults to `4px`.
 - `--cosmos-base-font-size`: Base font size. Defaults to `12px`. You may prefer `1em` or another relative unit.
@@ -58,12 +59,3 @@ declare namespace tooltip {
   declare function create(trigger: HTMLElement, content: HTMLElement, options: CreateTooltipOptions): TooltipApi;
 }
 ```
-
-## Customizing Modals
-Like everything else, modals can be customized with CSS.
-
-If you find yourself in the need to replace the entire modal with your own,
-this is currently not possible. However, in the future, I plan to introduce
-the `CosmosComponents` class which will allow you to selectively provide
-your own replacements for certain components. Effectively, you will simply
-register your own `cosmos-modal-connect` custom element etc.
