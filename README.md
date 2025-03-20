@@ -78,8 +78,22 @@ If the component does not follow this pattern, the build script may fail to dete
 The `css` tagged literal does nothing, really. You might as well just pass a string. However, it is useful for syntax highlighting & intellisense, e.g. with [Lit for VSCode](https://marketplace.visualstudio.com/items?itemName=runem.lit-plugin).
 
 ## Roadmap
-- [ ] More components
-- [x] Build script for .d.ts from sources for JSX support
+Following are completed & planned components:
+
+- [x] Address
+- [ ] User Address
+- [x] Balance
+- [ ] Account Balance
+- [x] Toasts
+- [x] Error modal
+- [ ] Wallet modal
+- [ ] WalletConnect QR Code
+- [ ] Gas Estimate
+- [ ] Web3 Button
+
+Following are meta features:
+
+- [ ] Build script for .d.ts from sources for JSX support (WIP)
 - [ ] Build script for [`custom-data.json` metadata for VSCode](https://github.com/microsoft/vscode-custom-data/tree/main/samples/webcomponents) + VSCode extension
 
 Originally, my motivation for integrating this proposed manifest was to automate properties controls generation in Storybook. Instead, I will now simply generate the entire story code for every component based on the components & zod schemas directly.
