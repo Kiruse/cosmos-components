@@ -1,6 +1,6 @@
+import { useComputed, useSignalEffect } from "@preact/signals";
 import { z } from "zod";
 import { css, defineComponent } from "../../webcomp.js";
-import { useComputed, useSignalEffect } from "@preact/signals";
 import './modal-base.js';
 
 export type ErrorFormatter = (error: any) => string | HTMLElement | undefined;

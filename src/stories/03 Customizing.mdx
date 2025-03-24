@@ -7,14 +7,17 @@ There are various ways to customize these Cosmos Components.
 Cosmos Components are built with various design tokens as CSS variables
 aka. custom properties. These are:
 
-- `--cosmos-bg-panel`: Background color of panels (e.g. tooltips, modals, etc.). Defaults to `rgb(49, 48, 54)`.
+- `--cosmos-bg-panel-400`: Slightly lighter background color of panels. Defaults to `rgb(59, 58, 64)`.
+- `--cosmos-bg-panel-500`: Regular background color of panels (e.g. tooltips, modals, etc.). Defaults to `rgb(49, 48, 54)`.
 - `--cosmos-color-line`: Color of lines (e.g. modal borders). Defaults to `rgb(67, 66, 73)`.
 - `--cosmos-spacing`: Base spacing unit. Defaults to `8px`.
 - `--cosmos-roundness`: Base border radius. Defaults to `4px`.
 - `--cosmos-base-font-size`: Base font size. Defaults to `12px`. You may prefer `1em` or another relative unit.
+- `--cosmos-wallet-modal-size`: Size multiplier for the wallet modal. Affects font size & logo image size. Defaults to `1`.
 
 There are a few z-index variables for the various overlays:
 
+- `--cosmos-modal-z`: Z-index of the modal container. Defaults to `998`.
 - `--cosmos-tooltip-z`: Z-index of the tooltip container. Defaults to `999`.
 - `--cosmos-toast-z`: Z-index of the toast container. Defaults to `1000`.
 
@@ -59,3 +62,16 @@ declare namespace tooltip {
   declare function create(trigger: HTMLElement, content: HTMLElement, options: CreateTooltipOptions): TooltipApi;
 }
 ```
+
+## Customizing Individual Components
+Additional to the design tokens above, these components make use of the
+web components' part concept, meaning you can customize specific Parts
+of a component using the `::part(name)` CSS selector. If a component is
+not listed here, it does not make use of the part system (however, a
+component it is built on might).
+
+### Wallet Modal
+The wallet modal has the following parts:
+
+- `modal`: The actual modal element, which lies on the backdrop. Allows
+  changing things like background color & modal width.

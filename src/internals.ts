@@ -3,8 +3,21 @@ import { useEffect, useRef } from "preact/hooks";
 import { JSX } from "preact/jsx-runtime";
 import { toast } from "./stories/toast.js";
 import { CreateTooltipOptions, tooltip } from "./stories/tooltip.js";
+import { z } from "zod";
+import { CosmosNetworkConfig } from "@apophis-sdk/core";
 
 export type SubAppContent = JSX.Element | (() => JSX.Element);
+
+export function getNetworkConfigSchema() {
+  return z.intersection(
+    z.custom<CosmosNetworkConfig>(),
+    z.object({
+      ecosystem: z.string(),
+      name: z.string(),
+      chainId: z.string(),
+    }),
+  ) as z.ZodType<CosmosNetworkConfig>;
+}
 
 export function subrender(content: SubAppContent, root: HTMLDivElement, shadow: 'none' | 'open' | 'closed' = 'open') {
   const _root = shadow === 'none' ? root : root.attachShadow({ mode: shadow });

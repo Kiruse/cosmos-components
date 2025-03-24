@@ -10,6 +10,7 @@ declare module 'preact/jsx-runtime' {
       'cosmos-modal-base': {
         children?: ComponentChildren;
         title?: string;
+        exportparts?: string;
       };
     }
   }
@@ -61,6 +62,7 @@ export const ModalBase = defineComponent({
             align-items: center;
             background: rgba(0, 0, 0, 0.5);
             backdrop-filter: blur(10px);
+            z-index: var(--cosmos-modal-z, 998);
           }
 
           .padding {
@@ -72,7 +74,7 @@ export const ModalBase = defineComponent({
             min-width: 360px;
             max-width: 90vw;
             padding: var(--cosmos-spacing, 8px);
-            background: var(--cosmos-bg-panel, rgb(49, 48, 54));
+            background: var(--cosmos-bg-panel-500, rgb(49, 48, 54));
             border: 2px solid var(--cosmos-color-line, rgb(67, 66, 73));
             border-radius: calc(var(--cosmos-roundness, 4px) * 2);
             box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.25);
@@ -133,9 +135,9 @@ export const ModalBase = defineComponent({
             }
           }
         `}</style>
-        <div ref={setBackdrop} class="backdrop">
+        <div ref={setBackdrop} class="backdrop" part="backdrop">
           <div class="upper padding" aria-hidden="true" />
-          <div class="modal">
+          <div class="modal" part="modal">
             <header>
               <slot name="header">
                 <h2>{title}</h2>

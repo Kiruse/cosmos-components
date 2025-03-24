@@ -1,3 +1,4 @@
+import { network } from '@apophis-sdk/core/test-helpers.js';
 import { modals } from './modals/modals.js';
 
 # Cosmos Modals
@@ -11,14 +12,28 @@ your own formatters.
   onClick={() => modals.showErrorModal('This is a dummy error')}
 >Show Error Modal</button>
 
+There is also a `toast.errorlink` function which will create a toast with a
+link to this error modal.
+
+<button
+  onClick={() => toast.errorlink('An error occurred.', {})}
+>Show Error Toast</button>
+
 ## Wallet Modal
 Prompt the user to connect their wallet. As these components are built on my
 [Apophis SDK](https://github.com/kiruse/apophis-sdk), the modal supports the
 same wallets as the SDK.
 
 <button
-  onClick={() => modals.showWalletModal()}
+  onClick={() => modals.showWalletModal([network])}
 >Show Wallet Modal</button>
+
+For wallets to appear in the modal, you must register them with the Apophis SDK:
+
+```ts
+import { registerCosmosWallets } from '@apophis-sdk/cosmos-signers';
+registerCosmosWallets();
+```
 
 The `modals.showWalletModal` function returns the modal's custom element
 instance. This element, in turn, exposes two events - `connect` and
@@ -27,6 +42,12 @@ instance. This element, in turn, exposes two events - `connect` and
 Alternatively, as it is built on my Apophis SDK, the `signer` signal will
 be populated. Other components of this library also refer to this signal
 and will thus automatically propagate updates.
+
+### Events
+The modal components expose the following events:
+
+- `connect`: Emitted when the user connects a wallet. The event detail contains the signer.
+- `close`: Emitted when the modal is closed.
 
 # Customizing Modals
 Like everything else, modals can be customized with CSS. You can also replace

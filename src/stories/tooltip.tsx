@@ -18,7 +18,7 @@ export const Tooltip = defineComponent({
             padding: calc(var(--cosmos-spacing, 8px));
             border-radius: calc(var(--cosmos-roundness, 4px));
             color:rgb(200, 197, 219);
-            background: var(--cosmos-bg-panel,rgb(49, 48, 54));
+            background: var(--cosmos-bg-panel-500,rgb(49, 48, 54));
             box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.25);
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
             font-size: var(--cosmos-base-font-size, 12px);

@@ -46,16 +46,22 @@ export buildMeta = ->
   ]
 export buildJsxTypes = (components) ->
   dts  = "import type { ComponentAttributes } from './webcomp.js';\n"
-  dts += "import type { #{comp.component} } from '#{comp.modpath}';\n" for comp in components
+  dts += "import type { #{comp.component} } from '#{comp.module.file.replace(/^.\/src\//, './')}';\n" for comp in components
   dts += '\n'
   dts += [
-    "declare namespace JSX {"
-    "  interface IntrinsicElements {"
-    ("    '#{comp.element}': ComponentAttributes<typeof #{comp.component}>;" for comp in components)...
-    "  }"
+    "interface CosmosElements {"
+    ("  '#{comp.element}': ComponentAttributes<typeof #{comp.component}>;" for comp in components)...
+    "}"
+    ""
+    "declare global {"
+    "  interface JSX extends CosmosElements {}"
     "}"
   ].join '\n'
-  await fs.writeFile 'dist/index.d.ts', dts
+  await fs.writeFile 'dist/elements.d.ts', dts
+  await Promise.all [
+    fs.copyFile 'assets/react.ts', 'dist/react.ts'
+    fs.copyFile 'assets/preact.ts', 'dist/preact.ts'
+  ]
 export buildVSCCustomData = (components) ->
   # TODO: implement
   console.warn 'VSC custom data not yet implemented'

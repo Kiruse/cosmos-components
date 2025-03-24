@@ -2,6 +2,7 @@ import { useComputed, useSignalEffect } from "@preact/signals";
 import { z } from "zod";
 import { animate, ComponentAttributes, css, defineComponent } from "../webcomp.js";
 import { useEffect } from "preact/hooks";
+import { modals } from "./modals/modals.js";
 
 type ToastAttributes = ComponentAttributes<typeof Toast>;
 
@@ -31,7 +32,9 @@ export const Toast = defineComponent({
 
     useEffect(() => {
       const lifespanEl = self.shadowRoot?.querySelector('.lifespan') as HTMLElement;
+      let lifespanAnim: ReturnType<typeof animate> | undefined;
       if (!lifespanEl) return;
+
       (async () => {
         const fadeAnim = animate(self, [
           { opacity: 0, transform: 'scale(0.9)' },
@@ -39,14 +42,28 @@ export const Toast = defineComponent({
         ], { duration: 200 });
         await fadeAnim.play();
 
-        await animate(lifespanEl, [
+        lifespanAnim = animate(lifespanEl, [
           { transform: 'scaleX(1)' },
           { transform: 'scaleX(0)' },
-        ], { duration: (lifespan.value ?? 5) * 1000 }).play();
+        ], { duration: (lifespan.value ?? 5) * 1000 });
+        await lifespanAnim.play();
 
         await fadeAnim.reverse();
         self.remove();
       })();
+
+      const listener = (e: MouseEvent) => {
+        if (self.contains(e.target as HTMLElement)) {
+          lifespanAnim?.pause();
+        } else {
+          lifespanAnim?.play();
+        }
+      };
+
+      document.body.addEventListener('mousemove', listener);
+      return () => {
+        document.body.removeEventListener('mousemove', listener);
+      };
     }, []);
 
     return (
@@ -150,6 +167,25 @@ export namespace toast {
   export const success = (content: HTMLElement | string, attrs: Omit<ToastAttributes, 'variant'>) => show(content, { ...attrs, variant: 'success' });
   export const error   = (content: HTMLElement | string, attrs: Omit<ToastAttributes, 'variant'>) => show(content, { ...attrs, variant: 'error' });
   export const warn    = (content: HTMLElement | string, attrs: Omit<ToastAttributes, 'variant'>) => show(content, { ...attrs, variant: 'warn' });
+
+  /** A variation of the error toast with a short message and a link to open a `cosmos-modal-error` containing the error details. */
+  export function errorlink(error: any, { message, ...attrs }: Omit<ToastAttributes, 'variant'> & { message?: string }) {
+    const id = Math.random().toString(36).slice(2);
+    const link = document.createElement('a');
+    link.id = id;
+    link.href = `#${id}`;
+    link.textContent = 'See details.';
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      modals.showErrorModal(error);
+    });
+    link.style.color = 'cornflowerblue';
+
+    const span = document.createElement('span');
+    span.appendChild(document.createTextNode((message ?? 'An error occurred.') + ' '));
+    span.appendChild(link);
+    return toast.error(span, attrs);
+  }
 }
 
 if (typeof window !== 'undefined') {

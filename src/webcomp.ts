@@ -1,5 +1,6 @@
 import { DecimalMarshalUnit } from '@kiruse/decimal/marshal';
 import { extendDefaultMarshaller } from '@kiruse/marshal';
+import { Event } from '@kiruse/typed-events';
 import { Signal, signal } from '@preact/signals';
 import { h, render } from 'preact';
 import { ComponentType } from 'preact/compat';
@@ -53,9 +54,14 @@ export type ComponentDefinition<T extends AttrDefinition> = {
 export type CosmosComponent<T extends ComponentDefinition<any>> = InstanceOf<T['Component']>;
 
 export type ComponentAttributesSchema<T extends ComponentDefinition<any>> = T['attrs'];
-export type ComponentAttributes<T extends ComponentDefinition<any>> = Optionalize<{
+export type ComponentAttributes<T extends ComponentDefinition<any>> = IntrinsicCustomElementAttributes & Optionalize<{
   [K in keyof T['attrs']]: zod.infer<T['attrs'][K]> | Signal<zod.infer<T['attrs'][K]>>;
 }>;
+
+interface IntrinsicCustomElementAttributes {
+  slot?: string;
+  exportparts?: string;
+}
 
 type Optionalize<T> =
   & { [K in PickUndefined<T>]?: T[K]; }
@@ -208,13 +214,21 @@ export const css = (strings: TemplateStringsArray, ...values: any[]) => {
  */
 export function animate(el: HTMLElement, keyframes: Keyframe[] | PropertyIndexedKeyframes | null, options: KeyframeAnimationOptions = {}) {
   const anim = el.animate(keyframes, { fill: 'forwards', ...options });
+  const onFinish = Event<AnimationPlaybackEvent>();
+  const onCancel = Event<AnimationPlaybackEvent>();
   anim.pause();
+  anim.onfinish = (e) => onFinish.emit(e);
+  anim.oncancel = (e) => onCancel.emit(e);
   return {
     play: () => {
       anim.play();
-      return new Promise<void>((resolve, reject) => {
-        anim.onfinish = () => resolve();
-        anim.oncancel = () => reject(new Error('Animation cancelled'));
+      return new Promise<AnimationPlaybackEvent>((resolve, reject) => {
+        onFinish.once(({ args: e }) => {
+          resolve(e);
+        });
+        onCancel.once(({ args: e }) => {
+          reject(e);
+        });
       });
     },
     pause: () => anim.pause(),
