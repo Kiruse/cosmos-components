@@ -5,6 +5,14 @@ import { toast } from "./stories/toast.js";
 import { CreateTooltipOptions, tooltip } from "./stories/tooltip.js";
 import { z } from "zod";
 import { CosmosNetworkConfig } from "@apophis-sdk/core";
+import { CSSProperties } from "preact/compat";
+import { Cosmos } from "@apophis-sdk/cosmos";
+
+export async function getNetworks() {
+  return await Promise.all([
+    Cosmos.getNetworkFromRegistry('neutrontestnet'),
+  ]);
+}
 
 export type SubAppContent = JSX.Element | (() => JSX.Element);
 
@@ -74,3 +82,5 @@ export function useToast(content: SubAppContent, { shadow, ...attrs }: UseToastO
     toast.show(contentEl.current, { ...attrs });
   }, [content, shadow]);
 }
+
+export const cssvars = (vars: CSSProperties & Record<`--${string}`, string | number>) => vars as CSSProperties;

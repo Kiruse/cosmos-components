@@ -133,3 +133,12 @@ declare module 'preact/jsx-runtime' {
 
 The above snippet is how React & Preact are actually integrated with these
 components.
+
+# Caveat about Signals
+While you can pass in signals to these components, your framework may unwrap
+the signal into a plain value. Preact does this, for example. Generally,
+whenever a signal would be updated by these components, they will also call
+a callback function, so you can pass signals in directly, but may still have
+to rely on callbacks to update your signals.
+
+However, these components currently do not feed data back out to signals.

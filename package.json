@@ -35,9 +35,9 @@
     "prepack": "bun run build"
   },
   "dependencies": {
-    "@apophis-sdk/core": "^0.2.1",
-    "@apophis-sdk/cosmos": "^0.2.1",
-    "@apophis-sdk/cosmwasm": "^0.2.1",
+    "@apophis-sdk/core": "^0.3.0-rc.4",
+    "@apophis-sdk/cosmos": "^0.3.0-rc.4",
+    "@apophis-sdk/cosmwasm": "^0.3.0-rc.4",
     "@kiruse/decimal": "^1.0.5-fix.1",
     "@kiruse/marshal": "^0.2.0-rc.1",
     "@kiruse/typed-events": "^1.1.0",
@@ -45,10 +45,11 @@
     "@preact/signals": "^2.0.1",
     "happy-dom": "^17.4.4",
     "preact": "^10.26.4",
+    "qrcode": "^1.5.4",
     "zod": "^3.24.2"
   },
   "devDependencies": {
-    "@apophis-sdk/cosmos-signers": "^0.2.1",
+    "@apophis-sdk/cosmos-signers": "^0.3.0-rc.4",
     "@babel/generator": "^7.26.10",
     "@babel/traverse": "^7.26.10",
     "@chromatic-com/storybook": "^3.2.5",
@@ -62,6 +63,7 @@
     "@types/bun": "latest",
     "@types/picomatch": "^3.0.2",
     "@types/pug": "^2.0.10",
+    "@types/qrcode": "^1.5.5",
     "bun-coffeescript": "^1.0.3",
     "chokidar": "^4.0.3",
     "npm-run-all2": "^7.0.2",

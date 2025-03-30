@@ -1,4 +1,4 @@
-import { network } from '@apophis-sdk/core/test-helpers.js';
+import { getNetworks } from '../internals.js';
 import { modals } from './modals/modals.js';
 
 # Cosmos Modals
@@ -25,7 +25,7 @@ Prompt the user to connect their wallet. As these components are built on my
 same wallets as the SDK.
 
 <button
-  onClick={() => modals.showWalletModal([network])}
+  onClick={async () => modals.showWalletModal(await getNetworks())}
 >Show Wallet Modal</button>
 
 For wallets to appear in the modal, you must register them with the Apophis SDK:

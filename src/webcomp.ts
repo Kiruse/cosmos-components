@@ -106,26 +106,13 @@ export function defineComponent<T extends AttrDefinition>({
     }
 
     attributeChangedCallback(name: string, oldValue: any, newValue: any) {
-      const attr = this.#attrs[name as keyof T];
-      let schema = attr.schema;
-      if (schema instanceof zod.ZodOptional) {
-        schema = schema._def.innerType;
-      }
-
-      const isStringSchema = schema instanceof zod.ZodString;
-      const isEnumSchema = schema instanceof zod.ZodEnum;
-
-      if (typeof newValue === 'string' && !(isStringSchema || isEnumSchema)) {
-        newValue = unmarshal(JSON.parse(newValue));
-      }
-
-      this.updateAttr(name, newValue);
+      this.updateAttr(name, this.#processAttr(attrsDesc[name as keyof T], newValue));
     }
 
     /** Parse attributes & properties on the element. */
     parseAttrs() {
       for (const attr in attrsDesc) {
-        const value = (this as any)[attr] ?? this.getAttribute(attr) ?? undefined;
+        const value: unknown = (this as any)[attr] ?? this.#attr(attr);
         //@ts-ignore
         this.#attrs[attr] = wrapAttr(attrsDesc[attr], value);
         this.updateAttr(attr, value);
@@ -168,6 +155,27 @@ export function defineComponent<T extends AttrDefinition>({
     override remove() {
       super.remove();
       render(null, options.shadow === 'none' ? this : this.shadowRoot!); // properly dismount
+    }
+
+    #attr(name: string) {
+      const value: unknown = this.getAttribute(name) ?? undefined;
+      const schema = attrsDesc[name as keyof T];
+      return this.#processAttr(schema, value);
+    }
+
+    #processAttr(schema: zod.ZodSchema, value: unknown) {
+      if (schema instanceof zod.ZodOptional) {
+        schema = schema._def.innerType;
+      }
+
+      const isStringSchema = schema instanceof zod.ZodString;
+      const isEnumSchema = schema instanceof zod.ZodEnum;
+
+      if (typeof value === 'string' && !(isStringSchema || isEnumSchema)) {
+        value = unmarshal(JSON.parse(value));
+      }
+
+      return value;
     }
 
     #getShadowRoot() {
