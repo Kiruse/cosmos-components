@@ -1,10 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/web-components';
 import { Address, AddressAttributes } from './address.js';
-import { getArgTypes } from '../story-helpers.js';
+import { getArgTypes } from '../../story-helpers.js';
 
 const meta: Meta<AddressAttributes> = {
   component: 'cosmos-address',
-  tags: ['autodocs'],
+  title: 'Components/Address',
   argTypes: getArgTypes(Address, {
     value: {
       description: 'The actual address value.',
@@ -31,5 +31,12 @@ export const Default: Story = {
   args: {
     value: 'neutron1jqz2205er0d8657ugll98c462cyplkcqmjthzv',
     bech32prefix: 'neutron',
+  },
+  parameters: {
+    docs: {
+      source: {
+        code: '<cosmos-address value="neutron1jqz2205er0d8657ugll98c462cyplkcqmjthzv" bech32prefix="neutron" />',
+      },
+    },
   },
 };

@@ -1,7 +1,7 @@
 import { Decimal } from "@kiruse/decimal";
 import { useComputed } from "@preact/signals";
 import { z } from "zod";
-import { css, defineComponent } from "../webcomp.js";
+import { css, defineComponent } from "../../webcomp.js";
 
 export const Balance = defineComponent({
   name: 'balance',

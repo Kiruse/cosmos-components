@@ -16,7 +16,7 @@ export function getArgTypes<Component extends ComponentDefinition<any>>(componen
       schema = schema._def.innerType;
     }
 
-    let type = 'text';
+    let type: any = 'text';
 
     if (schema instanceof z.ZodNumber) {
       type = 'number';

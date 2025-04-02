@@ -75,6 +75,44 @@ of a component using the `::part(name)` CSS selector. If a component is
 not listed here, it does not make use of the part system (however, a
 component it is built on might).
 
+## Replacing Components
+Web Components can easily be replaced with custom implementations - however,
+you will need a way to build your own web components. Some frameworks like
+Preact have helpers that make this a matter of a few lines of code on top
+of your usual Preact component's code (see [Preact Custom Element](https://github.com/preactjs/preact-custom-element)).
+
+When replacing a component, you must do so before the component is registered.
+Exactly for this case, the `CosmosComponents` class exists that allows you
+to specify which components to register and which you'd like to override:
+
+```ts
+import { CosmosComponents } from '@kiruse/cosmos-components';
+
+class YourButton extends HTMLElement {
+  // ...
+}
+
+CosmosComponents.default()
+  .with('cosmos-button', YourButton)
+  .register();
+```
+
+You can also remove components:
+
+```ts
+CosmosComponents.default()
+  .without('cosmos-button')
+  .register();
+customElements.define('cosmos-button', YourButton);
+```
+
+Though this case is only useful if you use another library that
+automatically registers custom elements.
+
+**Note** that your custom implementation should still support the
+attributes of the original component, as this library may use these
+components internally as well.
+
 ### Wallet Modal
 The wallet modal has the following parts:
 

@@ -1,0 +1,14 @@
+import { Meta, Canvas } from '@storybook/blocks';
+import * as BalanceStories from './balance.stories';
+
+<Meta of={BalanceStories} />
+
+# Balance Component
+The Balance component is a simple display component that shows a balance value
+with a denomination, rounded to a configurable number of decimal places. It has
+no other logic. It cannot retrieve balances from the blockchain or a backend.
+
+<Canvas of={BalanceStories.Default} />
+
+The `value` attribute can be a number, a formatted string, or a `Decimal` from
+my other package `@kiruse/decimal`.

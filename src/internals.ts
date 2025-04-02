@@ -1,12 +1,12 @@
+import { CosmosNetworkConfig } from "@apophis-sdk/core";
+import { Cosmos } from "@apophis-sdk/cosmos";
 import { render } from "preact";
+import { CSSProperties } from "preact/compat";
 import { useEffect, useRef } from "preact/hooks";
 import { JSX } from "preact/jsx-runtime";
-import { toast } from "./stories/toast.js";
-import { CreateTooltipOptions, tooltip } from "./stories/tooltip.js";
 import { z } from "zod";
-import { CosmosNetworkConfig } from "@apophis-sdk/core";
-import { CSSProperties } from "preact/compat";
-import { Cosmos } from "@apophis-sdk/cosmos";
+import { toast } from "./stories/Toast/toast.js";
+import { CreateTooltipOptions, tooltip } from "./stories/Tooltip/tooltip.js";
 
 export async function getNetworks() {
   return await Promise.all([
@@ -84,3 +84,23 @@ export function useToast(content: SubAppContent, { shadow, ...attrs }: UseToastO
 }
 
 export const cssvars = (vars: CSSProperties & Record<`--${string}`, string | number>) => vars as CSSProperties;
+
+export function unindent(str: string) {
+  const lines = str.split('\n');
+  if (lines.length <= 1) return str;
+
+  // first line could be already unindented
+  const offset = /^\s+/.test(lines[0]) ? 0 : 1
+
+  const minIndent = lines
+    .slice(offset)
+    .filter(line => line.trim().length > 0)
+    .reduce((min, line) => {
+      const indent = line.match(/^\s*/)?.[0].length ?? 0;
+      return Math.min(min, indent);
+    }, Infinity);
+
+  return lines
+    .map(line => line.slice(minIndent))
+    .join('\n');
+}

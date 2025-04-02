@@ -19,5 +19,5 @@
     "outDir": "dist",
     "allowSyntheticDefaultImports": true,
   },
-  "include": ["src/", ".generated/stories/"],
+  "include": ["src/", ".generated/stories/**/*"],
 }

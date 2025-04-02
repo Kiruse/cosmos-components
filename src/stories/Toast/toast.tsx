@@ -1,8 +1,8 @@
 import { useComputed, useSignalEffect } from "@preact/signals";
 import { z } from "zod";
-import { animate, ComponentAttributes, css, defineComponent } from "../webcomp.js";
+import { animate, ComponentAttributes, css, defineComponent } from "../../webcomp.js";
 import { useEffect } from "preact/hooks";
-import { modals } from "./modals/modals.js";
+import { modals } from "../modals/modals.js";
 
 type ToastAttributes = ComponentAttributes<typeof Toast>;
 

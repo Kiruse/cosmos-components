@@ -1,0 +1,13 @@
+import { Meta, Canvas } from '@storybook/blocks';
+import * as AddressStories from './address.stories';
+
+<Meta of={AddressStories} />
+
+# Address Component
+
+The `cosmos-address` component serves as a standardized way to display Web3
+addresses. It shows truncated addresses with customizable truncation length,
+shows a tooltip with the full address, and allows copying the address to the
+user's clipboard.
+
+<Canvas of={AddressStories.Default} />

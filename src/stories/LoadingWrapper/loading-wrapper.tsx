@@ -1,7 +1,7 @@
 import { Signal } from "@preact/signals";
 import { z } from "zod";
-import { css, defineComponent } from "../webcomp.js";
-import { cssvars } from "../internals.js";
+import { css, defineComponent } from "../../webcomp.js";
+import { cssvars } from "../../internals.js";
 
 declare module 'preact/jsx-runtime' {
   namespace JSX {

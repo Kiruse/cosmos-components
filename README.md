@@ -87,13 +87,17 @@ Following are completed & planned components:
 - [x] Toasts
 - [x] Error modal
 - [ ] Wallet modal
-- [ ] WalletConnect QR Code
+- [x] WalletConnect QR Code
 - [ ] Gas Estimate
 - [ ] Web3 Button
+- [ ] Connect Boundary
 
 Following are meta features:
 
-- [ ] Build script for .d.ts from sources for JSX support (WIP)
+- [x] Build script for .d.ts from sources for JSX support
 - [ ] Build script for [`custom-data.json` metadata for VSCode](https://github.com/microsoft/vscode-custom-data/tree/main/samples/webcomponents) + VSCode extension
+- [ ] Improve build script to bundle library files (w/o dependencies) for faster load times when using ECMA modules in the browser directly
+- [ ] Add doc comments to the components for IntelliSense. Requires changes to the build script.
+- [ ] Overhaul components documentation pages.
 
 Originally, my motivation for integrating this proposed manifest was to automate properties controls generation in Storybook. Instead, I will now simply generate the entire story code for every component based on the components & zod schemas directly.

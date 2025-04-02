@@ -1,0 +1,38 @@
+import { Meta, Canvas } from '@storybook/blocks';
+import * as TooltipStories from './tooltip.stories';
+import * as AddressStories from '../Address/address.stories';
+
+<Meta of={TooltipStories} />
+
+# Tooltip
+The `cosmos-tooltip` component implements a rudimentary tooltip built on [Popper.js](https://popper.js.org/).
+Within this component library, it is used to show full addresses, eg:
+
+<Canvas of={AddressStories.Default} />
+
+It can be manually summoned by calling the `tooltip.create` function:
+
+```tsx
+tooltip.create(document.getElementById('my-trigger'), 'This is a tooltip!');
+```
+
+To support as many frontend frameworks as possible, the content it accepts is either
+a string, or DOM nodes, which makes it rather incompatible with vDOMs like React. You
+will likely need to build a helper if you intend to use this component yourself.
+
+Otherwise, I recommend overriding the `cosmos-tooltip` component using the `CosmosComponents`
+builder class:
+
+```tsx
+import { CosmosComponents } from '@kiruse/cosmos-components';
+import { MyTooltipComponent } from './my-tooltip-component.js';
+
+CosmosComponents.default()
+  .with('cosmos-tooltip', MyTooltipComponent)
+  .register();
+```
+
+While `MyTooltipComponent` will need to also be a web component, your framework may
+have existing tools to expose your own components as web components. For example,
+Preact has [preact-custom-element](https://github.com/preactjs/preact-custom-element).
+This component library only cares about the default slot.

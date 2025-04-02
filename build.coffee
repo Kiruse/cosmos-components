@@ -32,7 +32,7 @@ loadFiles = (dir, pred = -> true) ->
   for entry in entries
     fullPath = path.join(dir, entry.name)
     if entry.isDirectory()
-      files.push ...(await loadFiles(fullPath))
+      files.push ...(await loadFiles(fullPath, pred))
     else if entry.isFile() and pred(fullPath)
       files.push fullPath
   files
@@ -45,12 +45,13 @@ export buildMeta = ->
     buildVSCCustomData components
   ]
 export buildJsxTypes = (components) ->
-  dts  = "import type { ComponentAttributes } from './webcomp.js';\n"
+  dts  = "import type { ComponentAttributes, ComponentEvents } from './webcomp.js';\n"
+  dts += "import type { ComponentChildren } from 'preact';\n"
   dts += "import type { #{comp.component} } from '#{comp.module.file.replace(/^.\/src\//, './')}';\n" for comp in components
   dts += '\n'
   dts += [
     "interface CosmosElements {"
-    ("  '#{comp.element}': ComponentAttributes<typeof #{comp.component}>;" for comp in components)...
+    ("  '#{comp.element}': ComponentAttributes<typeof #{comp.component}> & Partial<ComponentEvents<typeof #{comp.component}>> & { children?: ComponentChildren };" for comp in components)...
     "}"
     ""
     "declare global {"
@@ -70,12 +71,12 @@ export buildVSCCustomData = (components) ->
 # @returns {Module[]}
 ###
 getModules = ->
-  files = await loadFiles 'src/stories', (file) -> pm.isMatch file, '**/*.tsx'
+  files = await loadFiles 'src/stories', (file) -> pm.isMatch(file, '**/*.tsx') and not file.includes '.stories.'
   files = files.map (f) -> './' + f
   await Promise.all files.map (f) ->
     console.log "Processing #{f}" if debug
     mod = await import(f)
-    ast = await parse await fs.readFile(f, 'utf8')
+    ast = await parse await fs.readFile(f, 'utf8'), f
     return { mod, file: f, ast }
 
 ###*

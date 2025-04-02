@@ -1,0 +1,14 @@
+button {
+  background: rgba(0, 0, 0, 0.05);
+  border: 1px solid grey;
+  transition: box-shadow 0.1s ease-in-out, transform 0.1s ease-in-out;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px 0 #aaa;
+  cursor: pointer;
+}
+
+button:hover {
+  box-shadow: 0 4px 6px 0 #aaa;
+  transform: translateY(-2px);
+}

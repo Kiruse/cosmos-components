@@ -1,0 +1,30 @@
+import { Meta, Canvas } from '@storybook/blocks';
+import * as ConnectBoundaryStories from './connect-boundary.stories';
+
+<Meta of={ConnectBoundaryStories} />
+
+# ConnectBoundary
+The `cosmos-connect-boundary` component is a pure flow control component that
+has no other styling or layout responsibilities. It is used to ensure that a
+component is only rendered when the user is connected to the network.
+
+<Canvas of={ConnectBoundaryStories.Default} />
+
+It manages 3 distinct states:
+
+1. The user has not yet connected their wallet.
+2. The user has connected their wallet, but not signed into your backend yet.
+3. The user has both connected their wallet and signed into your backend.
+
+If the user has not yet connected their wallet, the component will display
+the `connect` slot.
+
+However, as there is no way for these components to know how a user is
+supposed to sign in, it is up to you, the developer, to implement the logic
+and supply the `is-logged-in` attribute. If the `is-logged-in` attribute is
+not supplied, the component assumes that login is not required. If it is
+false, it displays the `login` slot. If it is true, it displays the `content`
+slot.
+
+The component will emit the `connected` event when the user connects their
+wallet. This can be used to automatically prompt the user to sign in.

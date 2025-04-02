@@ -3,6 +3,7 @@ import { registerCosmosSigners, WalletConnectCosmosSigner } from '@apophis-sdk/c
 import '../src/index.js';
 import { mw, Signer } from '@apophis-sdk/core';
 import { DefaultCosmWasmMiddlewares } from '@apophis-sdk/cosmwasm';
+import './global.css';
 
 mw.use(...DefaultCosmWasmMiddlewares);
 // this should be one line, but it's bugged in 0.3-rc.1

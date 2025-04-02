@@ -1,15 +1,15 @@
-import { Signer } from '@apophis-sdk/core';
+import { signals, Signer } from '@apophis-sdk/core';
 import type { WalletConnectCosmosSigner } from '@apophis-sdk/cosmos-signers';
 import { useComputed, useSignal, useSignalEffect } from '@preact/signals';
 import { ComponentChildren } from 'preact';
+import { useEffect } from 'preact/hooks';
 import qr from 'qrcode';
 import { z } from "zod";
 import { css, defineComponent } from "../../webcomp.js";
 import './modal-base.js';
 import { getNetworkConfigSchema } from '../../internals.js';
-import { toast } from '../toast.js';
-import '../loading-wrapper.js';
-import { useEffect } from 'preact/hooks';
+import '../LoadingWrapper/loading-wrapper.js';
+import { toast } from '../Toast/toast.js';
 
 type Platform = 'android' | 'ios' | 'browser';
 
@@ -57,6 +57,7 @@ export const WalletModal = defineComponent({
                           onClick={async () => {
                             try {
                               await signer.connect(networks.peek());
+                              signals.signer.value = signer;
                               self.dispatchEvent(new CustomEvent('connect', { detail: { signer } }))
                               self.dispatchEvent(new CustomEvent('close'));
                               self.remove();

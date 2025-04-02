@@ -1,0 +1,22 @@
+import { Meta, Canvas } from '@storybook/blocks';
+import * as ToastStories from './toast.stories';
+
+<Meta of={ToastStories} />
+
+# Toast
+The `cosmos-toast` component is a useful helper to display some feedback to the user.
+
+<Canvas of={ToastStories.Info} />
+
+<Canvas of={ToastStories.Success} />
+
+<Canvas of={ToastStories.Error} />
+
+Generally, you will use the `toast` object to display a toast:
+
+<Canvas of={ToastStories.SpawnToast} />
+
+There is also a specialized `toast.errorlink` method that will display an error
+toast with a link to open a `cosmos-modal-error` containing the error details.
+
+<Canvas of={ToastStories.ErrorLink} />

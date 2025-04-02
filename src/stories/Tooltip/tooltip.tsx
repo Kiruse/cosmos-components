@@ -1,5 +1,5 @@
 import { createPopper, Placement } from "@popperjs/core/lib/index.js";
-import { ComponentAttributes, css, defineComponent, isSignalish } from "../webcomp.js";
+import { ComponentAttributes, css, defineComponent, isSignalish } from "../../webcomp.js";
 
 export type TooltipAttributes = ComponentAttributes<typeof Tooltip>;
 export type CreateTooltipOptions = {

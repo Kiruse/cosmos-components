@@ -1,6 +1,6 @@
 import { DecimalMarshalUnit } from '@kiruse/decimal/marshal';
 import { extendDefaultMarshaller } from '@kiruse/marshal';
-import { Event } from '@kiruse/typed-events';
+import { Event as TypedEvent } from '@kiruse/typed-events';
 import { Signal, signal } from '@preact/signals';
 import { h, render } from 'preact';
 import { ComponentType } from 'preact/compat';
@@ -15,7 +15,7 @@ type InstanceOf<T> = T extends new (...args: any[]) => infer R ? R : never;
 
 export type AttrDefinition = Record<string, zod.ZodSchema>;
 
-export interface WebComponentOptions<T extends AttrDefinition> {
+export interface WebComponentOptions<T extends AttrDefinition, E extends EventDefinition = {}> {
   name: string;
   attrs: T;
   /** Whether to use the Shadow DOM. Defaults to `'open'`. Set to `'none'` to disable the Shadow DOM, but beware of CSS scoping issues. */
@@ -25,6 +25,8 @@ export interface WebComponentOptions<T extends AttrDefinition> {
   css?: string;
   /** General purpose unmarshal function for attributes. By default, we use my other `@kiruse/marshal` package. */
   unmarshal?(value: any): any;
+  /** Event definitions for this component. Each key defines a property that can be set with an event handler. */
+  events?: E;
 }
 
 export interface WebComponentProps<T extends AttrDefinition> {
@@ -45,10 +47,13 @@ type Attrs<T extends AttrDefinition> = {
   };
 }
 
-export type ComponentDefinition<T extends AttrDefinition> = {
+export type EventDefinition = Record<string, zod.ZodSchema>;
+
+export type ComponentDefinition<T extends AttrDefinition, E extends EventDefinition = {}> = {
   name: string;
   Component: Ctor;
   attrs: T;
+  events: E;
 }
 
 export type CosmosComponent<T extends ComponentDefinition<any>> = InstanceOf<T['Component']>;
@@ -57,6 +62,15 @@ export type ComponentAttributesSchema<T extends ComponentDefinition<any>> = T['a
 export type ComponentAttributes<T extends ComponentDefinition<any>> = IntrinsicCustomElementAttributes & Optionalize<{
   [K in keyof T['attrs']]: zod.infer<T['attrs'][K]> | Signal<zod.infer<T['attrs'][K]>>;
 }>;
+
+type ToPascalCase<S extends string> = S extends `${infer First}-${infer Rest}`
+  ? `${Capitalize<First>}${ToPascalCase<Rest>}`
+  : Capitalize<S>;
+
+export type ComponentEventsSchema<T extends ComponentDefinition<any>> = T['events'];
+export type ComponentEvents<T extends ComponentDefinition<any, EventDefinition>> = {
+  [K in string & keyof T['events'] as `on${ToPascalCase<K>}`]: (e: CustomEvent<zod.infer<T['events'][K & keyof EventDefinition]>>) => void;
+};
 
 interface IntrinsicCustomElementAttributes {
   slot?: string;
@@ -75,21 +89,42 @@ type PickDefined<T> = {
   [K in keyof T]: undefined extends T[K] ? never : K;
 }[keyof T];
 
-export function defineComponent<T extends AttrDefinition>({
+export function defineComponent<T extends AttrDefinition, E extends EventDefinition = {}>({
   name,
   unmarshal = defaultMarshaller.unmarshal,
+  events = {} as E,
   ...options
-}: WebComponentOptions<T>) {
+}: WebComponentOptions<T, E>) {
   const attrsDesc: T = options.attrs ?? {} as any;
 
   class Component extends HTMLElement {
     static observedAttributes = Object.keys(attrsDesc);
     #attrs: Attrs<T>;
     #extraAttrs = {} as any;
+    #eventHandlers = new Map<string, EventListener>();
 
     constructor() {
       super();
       this.#attrs = Object.fromEntries(Object.entries(attrsDesc).map(([key, schema]) => [key, wrapAttr(schema, undefined)])) as Attrs<T>;
+
+      // Set up event property getters/setters
+      for (const eventName of Object.keys(events)) {
+        const propertyName = `on${kebabToPascal(eventName)}`;
+        Object.defineProperty(this, propertyName, {
+          get: () => this.#eventHandlers.get(eventName),
+          set: (handler: ((e: CustomEvent) => void) | null) => {
+            if (this.#eventHandlers.has(eventName)) {
+              this.removeEventListener(eventName, this.#eventHandlers.get(eventName)!);
+            }
+            if (handler) {
+              this.#eventHandlers.set(eventName, handler as EventListener);
+              this.addEventListener(eventName, handler as EventListener);
+            } else {
+              this.#eventHandlers.delete(eventName);
+            }
+          },
+        });
+      }
     }
 
     connectedCallback() {
@@ -155,6 +190,22 @@ export function defineComponent<T extends AttrDefinition>({
     override remove() {
       super.remove();
       render(null, options.shadow === 'none' ? this : this.shadowRoot!); // properly dismount
+      // Clean up event listeners
+      for (const [eventName, handler] of this.#eventHandlers) {
+        this.removeEventListener(eventName, handler);
+      }
+      this.#eventHandlers.clear();
+    }
+
+    /** Emit a typed `CustomEvent`. */
+    emit<Ev extends string & keyof E>(eventName: Ev, detail: zod.infer<E[Ev]>) {
+      const schema = events[eventName];
+      if (!schema) throw new Error(`Event ${eventName} is not defined`);
+      const parsed = schema.safeParse(detail);
+      if (!parsed.success) throw new Error(`Invalid event detail for ${eventName}: ${parsed.error}`);
+      const event = new CustomEvent(eventName, { detail: parsed.data });
+      this.dispatchEvent(event);
+      return event;
     }
 
     #attr(name: string) {
@@ -205,7 +256,9 @@ export function defineComponent<T extends AttrDefinition>({
     Component,
     /** Attributes schema of the component. */
     attrs: options.attrs,
-  } satisfies ComponentDefinition<T>;
+    /** Events schema of the component. */
+    events,
+  } satisfies ComponentDefinition<T, E>;
 }
 
 /** Rudimentary CSS template literal. Currently, it does nothing fancy, it just concatenates the strings and values.
@@ -222,8 +275,8 @@ export const css = (strings: TemplateStringsArray, ...values: any[]) => {
  */
 export function animate(el: HTMLElement, keyframes: Keyframe[] | PropertyIndexedKeyframes | null, options: KeyframeAnimationOptions = {}) {
   const anim = el.animate(keyframes, { fill: 'forwards', ...options });
-  const onFinish = Event<AnimationPlaybackEvent>();
-  const onCancel = Event<AnimationPlaybackEvent>();
+  const onFinish = TypedEvent<AnimationPlaybackEvent>();
+  const onCancel = TypedEvent<AnimationPlaybackEvent>();
   anim.pause();
   anim.onfinish = (e) => onFinish.emit(e);
   anim.oncancel = (e) => onCancel.emit(e);
@@ -250,6 +303,13 @@ export function animate(el: HTMLElement, keyframes: Keyframe[] | PropertyIndexed
     finish: () => anim.finish(),
     cancel: () => anim.cancel(),
   };
+}
+
+function kebabToPascal(kebab: string): string {
+  return kebab
+    .split('-')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .join('');
 }
 
 function wrapAttr<T>(schema: zod.ZodSchema, initialValue: T | Signal<T>) {

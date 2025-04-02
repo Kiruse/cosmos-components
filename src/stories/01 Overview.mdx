@@ -1,4 +1,6 @@
 import '..';
+import { modals } from '..';
+import { getNetworks } from '../internals';
 
 # Overview
 Kiru's Cosmos Components are a collection of web components that I use to build
@@ -8,59 +10,97 @@ to be used to jumpstart the creation of new Dapps with as little effort as possi
 However, it is still an early work in progress, and only few components have
 been implemented. This page serves as a quick overview of the available components.
 
-## Address
-The `cosmos-address` component serves as a standardized way to display Web3
-addresses. It shows truncated addresses with customizable truncation length,
-shows a tooltip with the full address, and allows copying the address to the
-user's clipboard.
+# Setup
+These components are designed to be used both with a package manager as well
+as a CDN.
 
-<cosmos-address value="neutron1r5m978tlcuuuvmaw6xqdj2k2qpv5myxwxpssvt" bech32prefix="neutron" />
+## Package Manager
+Install with your favorite package manager's equivalent of:
 
-```tsx
-<cosmos-address value="neutron1r5m978tlcuuuvmaw6xqdj2k2qpv5myxwxpssvt" bech32prefix="neutron" />
+```bash
+npm install @kiruse/cosmos-components
 ```
 
-## Balance
-The `cosmos-balance` component serves as a standardized way to display a
-localized & formatted coin amount with denomination.
+Then, import in your project:
 
-<cosmos-balance value="1.23456" denom="NTRN" decimals={3} />
-
-```tsx
-<cosmos-balance value="1.23456" denom="NTRN" decimals={3} />
+```ts
+import { CosmosComponents } from '@kiruse/cosmos-components';
+CosmosComponents.register();
 ```
 
-- `decimals` is the number of decimal places to display, not the number of
-  decimals in the coin.
+## CDN
+Include the following script in your HTML:
 
-### Account Balance
-The `cosmos-account-balance` component is an extension of the `cosmos-balance`
-component that fetches the balance of an account from the chain and displays it.
-There are some differences compared to its parent component:
+```html
+<script type="module">
+  import { CosmosComponents } from 'https://esm.sh/@kiruse/cosmos-components';
+  CosmosComponents.register();
+</script>
+```
 
-- It takes the registered `denom` rather than the display denom. It then looks
-  up the display denom and its exponent from the chain.
-- It shows a spinner while the balance is loading and no balance has been loaded
-  yet, or a stale state if the balance is available and being refreshed.
-- Has an error state if the balance cannot be fetched, with a retry button
-  and a link to open a modal containing the error details.
-- Has a `kind` attribute to specify the kind of coin: native or cw20.
+You may also use an import map to make imports consistent:
 
-<cosmos-account-balance
-  account="neutron1r5m978tlcuuuvmaw6xqdj2k2qpv5myxwxpssvt"
-  kind="native"
-  denom="untrn"
-  decimals={3}
-/>
+```html
+<script type="importmap">
+  { "imports": { "@kiruse/cosmos-components": "https://esm.sh/@kiruse/cosmos-components" } }
+</script>
+<script type="module">
+  import { CosmosComponents } from '@kiruse/cosmos-components';
+  CosmosComponents.register();
+</script>
+```
+
+# Components
+
+## Connect Boundary
+The `cosmos-connect-boundary` component switches between three different
+states based on whether the user has connected their wallet and/or signed in.
+Signing in is particularly useful for Dapps that communicate with a backend
+server, but is optional and defaults to false.
+
+It is a flow control component that provides no other UI and is completely
+unstyled. It is meant to be used together with your own UI components.
+
+It uses three slots to display your content. None of these slots provide default
+content.
+
+- `content`: Shown when the user has connected their wallet and signed in
+  (if required).
+- `connect`: Shown when the user has not yet connected their wallet.
+- `login`: Shown when the user has connected their wallet but still needs to
+  sign in.
+
+The login step is often not needed. Thus, if the `is-logged-in` attribute is
+not present or nullish, the `login` slot is never shown. Accordingly, if the
+`is-logged-in` attribute is false, the `connect` slot is shown after the user
+has connected their wallet. Otherwise, the `content` slot is shown.
+
+<cosmos-connect-boundary persist="true">
+  <div slot="content">
+    <pre>Thank you for connecting your wallet!</pre>
+  </div>
+  <div slot="connect">
+    <button
+      onClick={async () => {
+        modals.showWalletModal(await getNetworks());
+      }}
+    >Connect your Wallet</button>
+  </div>
+</cosmos-connect-boundary>
 
 ```tsx
-<cosmos-account-balance
-  account="neutron1r5m978tlcuuuvmaw6xqdj2k2qpv5myxwxpssvt"
-  kind="native"
-  denom="untrn"
-  decimals={3}
-/>
+<cosmos-connect-boundary persist="true">
+  <div slot="content">
+    <pre>Thank you for connecting your wallet!</pre>
+  </div>
+  <div slot="connect">
+    <pre>Please connect your wallet to continue.</pre>
+  </div>
+</cosmos-connect-boundary>
 ```
+
+The component will emit the `connected` event when the user connects their
+wallet. This can be used to automatically prompt the user to sign in.
 
 ## Toast
 
