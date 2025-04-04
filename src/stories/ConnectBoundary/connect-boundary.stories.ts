@@ -36,6 +36,9 @@ export const Default: Story = {
             <div slot="content">
               Thank you for connecting your wallet!
             </div>
+            <div slot="connect">
+              <button onClick={() => modals.showWalletModal(networks)}>Connect your Wallet</button>
+            </div>
           </cosmos-connect-boundary>
         `),
       },

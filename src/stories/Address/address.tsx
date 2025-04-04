@@ -5,6 +5,14 @@ import { useTooltip } from "../../internals.js";
 import { ComponentAttributes, css, defineComponent } from "../../webcomp.js";
 import { toast } from "../Toast/toast.js";
 
+declare module 'preact/jsx-runtime' {
+  export namespace JSX {
+    interface IntrinsicElements {
+      'cosmos-address': ComponentAttributes<typeof Address>;
+    }
+  }
+}
+
 export type AddressAttributes = ComponentAttributes<typeof Address>;
 
 export const Address = defineComponent({

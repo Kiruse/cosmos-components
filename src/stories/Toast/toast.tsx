@@ -163,13 +163,13 @@ export namespace toast {
     container.appendChild(toast);
   }
 
-  export const info    = (content: HTMLElement | string, attrs: Omit<ToastAttributes, 'variant'>) => show(content, { ...attrs, variant: 'info' });
-  export const success = (content: HTMLElement | string, attrs: Omit<ToastAttributes, 'variant'>) => show(content, { ...attrs, variant: 'success' });
-  export const error   = (content: HTMLElement | string, attrs: Omit<ToastAttributes, 'variant'>) => show(content, { ...attrs, variant: 'error' });
-  export const warn    = (content: HTMLElement | string, attrs: Omit<ToastAttributes, 'variant'>) => show(content, { ...attrs, variant: 'warn' });
+  export const info    = (content: HTMLElement | string, attrs: Omit<ToastAttributes, 'variant'> = {}) => show(content, { ...attrs, variant: 'info' });
+  export const success = (content: HTMLElement | string, attrs: Omit<ToastAttributes, 'variant'> = {}) => show(content, { ...attrs, variant: 'success' });
+  export const error   = (content: HTMLElement | string, attrs: Omit<ToastAttributes, 'variant'> = {}) => show(content, { ...attrs, variant: 'error' });
+  export const warn    = (content: HTMLElement | string, attrs: Omit<ToastAttributes, 'variant'> = {}) => show(content, { ...attrs, variant: 'warn' });
 
   /** A variation of the error toast with a short message and a link to open a `cosmos-modal-error` containing the error details. */
-  export function errorlink(error: any, { message, ...attrs }: Omit<ToastAttributes, 'variant'> & { message?: string }) {
+  export function errorlink(error: any, { message, ...attrs }: Omit<ToastAttributes, 'variant'> & { message?: string } = {}) {
     const id = Math.random().toString(36).slice(2);
     const link = document.createElement('a');
     link.id = id;

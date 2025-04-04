@@ -4,3 +4,4 @@ export * from './stories/Address/address.js';
 export * from './stories/Balance/balance.js';
 export * from './stories/Toast/toast.js';
 export * from './stories/Tooltip/tooltip.js';
+export * from './utils.js';

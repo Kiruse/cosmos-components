@@ -3,7 +3,7 @@ import * as ConnectBoundaryStories from './connect-boundary.stories';
 
 <Meta of={ConnectBoundaryStories} />
 
-# ConnectBoundary
+# Connect Boundary
 The `cosmos-connect-boundary` component is a pure flow control component that
 has no other styling or layout responsibilities. It is used to ensure that a
 component is only rendered when the user is connected to the network.
@@ -15,6 +15,8 @@ It manages 3 distinct states:
 1. The user has not yet connected their wallet.
 2. The user has connected their wallet, but not signed into your backend yet.
 3. The user has both connected their wallet and signed into your backend.
+
+For all 3 states you will need to supply your own content.
 
 If the user has not yet connected their wallet, the component will display
 the `connect` slot.

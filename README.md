@@ -86,11 +86,11 @@ Following are completed & planned components:
 - [ ] Account Balance
 - [x] Toasts
 - [x] Error modal
-- [ ] Wallet modal
+- [x] Wallet modal
 - [x] WalletConnect QR Code
 - [ ] Gas Estimate
 - [ ] Web3 Button
-- [ ] Connect Boundary
+- [x] Connect Boundary
 
 Following are meta features:
 

@@ -1,6 +1,6 @@
 import { signals, Signer } from '@apophis-sdk/core';
 import type { WalletConnectCosmosSigner } from '@apophis-sdk/cosmos-signers';
-import { useComputed, useSignal, useSignalEffect } from '@preact/signals';
+import { Signal, useComputed, useSignal, useSignalEffect } from '@preact/signals';
 import { ComponentChildren } from 'preact';
 import { useEffect } from 'preact/hooks';
 import qr from 'qrcode';
@@ -10,6 +10,8 @@ import './modal-base.js';
 import { getNetworkConfigSchema } from '../../internals.js';
 import '../LoadingWrapper/loading-wrapper.js';
 import { toast } from '../Toast/toast.js';
+import { rememberSigner } from '../../utils.js';
+import { modals } from './modals.js';
 
 type Platform = 'android' | 'ios' | 'browser';
 
@@ -23,9 +25,18 @@ export const WalletModal = defineComponent({
     const signers = Signer.signers.filter(s => s.type !== 'walletconnect');
     const [wcSigner] = Signer.signers.filter(s => s.type === 'walletconnect') as WalletConnectCosmosSigner[];
     const wcState = useComputed(() => wcSigner?.state.value);
-    const showQR = useComputed(() => wcState.value?.state !== 'error');
-    const loadingQR = useComputed(() => wcState.value?.state !== 'pending' || !wcState.value.uri);
     const canvas = useSignal<HTMLCanvasElement | null>(null);
+
+    const close = () => {
+      self.dispatchEvent(new CustomEvent('close'));
+      self.remove();
+    }
+
+    const handleError = (error: any) => {
+      self.dispatchEvent(new CustomEvent('reject', { detail: { error } }));
+      toast.errorlink(error, { message: 'Failed to connect wallet.' });
+      console.error('Failed to connect wallet:', error);
+    }
 
     useSignalEffect(() => {
       if (!wcSigner || !canvas.value) return;
@@ -34,9 +45,25 @@ export const WalletModal = defineComponent({
       }
     });
 
+    // initialize walletconnect
     useEffect(() => {
       if (!wcSigner) return;
-      wcSigner.connect(networks.peek());
+      let live = true;
+      wcSigner.connect(networks.peek())
+        .then(() => {
+          if (!live) return;
+          // we only want to connect immediately if the signer was not restored from a previous session
+          // otherwise, the modal might close immediately after opening, which is bad UX
+          if (wcSigner.state.value?.state !== 'connected') return;
+          if (!wcSigner.state.value.restored) {
+            signals.signer.value = wcSigner;
+            rememberSigner(wcSigner);
+            self.dispatchEvent(new CustomEvent('connect', { detail: { signer: wcSigner } }));
+            close();
+          }
+        })
+        .catch(handleError);
+      return () => live = false;
     }, [wcSigner]);
 
     return (
@@ -58,12 +85,11 @@ export const WalletModal = defineComponent({
                             try {
                               await signer.connect(networks.peek());
                               signals.signer.value = signer;
+                              rememberSigner(signer);
                               self.dispatchEvent(new CustomEvent('connect', { detail: { signer } }))
-                              self.dispatchEvent(new CustomEvent('close'));
-                              self.remove();
+                              close();
                             } catch (error: any) {
-                              self.dispatchEvent(new CustomEvent('reject', { detail: { error } }))
-                              toast.errorlink(error, { message: 'Failed to connect wallet.' });
+                              handleError(error);
                             }
                           }}
                         >
@@ -76,16 +102,7 @@ export const WalletModal = defineComponent({
                     ))}
                   </ul>
                 )}
-                {(wcSigner) && (isMobilePlatform() ? (
-                  <></>
-                ) : (
-                  <Section title="WalletConnect" condition={showQR.value}>
-                    <p>Scan this QR code with your mobile wallet:</p>
-                    <cosmos-loading-wrapper loading={loadingQR}>
-                      <canvas ref={(el) => canvas.value = el} />
-                    </cosmos-loading-wrapper>
-                  </Section>
-                ))}
+                <WalletConnectSection self={self} close={close} canvas={canvas} />
               </>
             ) : (
               <p style={{ textAlign: 'center', fontStyle: 'italic' }}>
@@ -115,6 +132,92 @@ function Section({ title, level = 2, condition = true, children }: SectionProps)
       {children}
     </section>
   )
+}
+
+function WalletConnectSection({ self, close, canvas }: { self: HTMLElement, close: () => void, canvas: Signal<HTMLCanvasElement | null> }) {
+  const signer = Signer.signers.filter(s => s.type === 'walletconnect')[0] as WalletConnectCosmosSigner;
+  const state = useComputed(() => signer?.state.value);
+
+  if (!signer) return null;
+
+  switch (state.value?.state) {
+    case 'connected':
+      if (state.value.restored) {
+        return (
+          <Section title="WalletConnect">
+            <button
+              type="button"
+              onClick={() => {
+                signals.signer.value = signer;
+                rememberSigner(signer);
+                self.dispatchEvent(new CustomEvent('connect', { detail: { signer: signer } }));
+                close();
+              }}
+            >
+              <img class="logo" src={signer.logoURL?.toString()} alt={`${signer.displayName} logo`} />
+              <div class="name">
+                Reconnect WalletConnect Session
+              </div>
+            </button>
+          </Section>
+        );
+      } else {
+        // When the session is not restored, the user has scanned the QR code & the modal should automatically close
+        return (
+          <Section title="WalletConnect">
+            <p>WalletConnect session successfully established.</p>
+          </Section>
+        );
+      }
+    case 'pending':
+      // URI should always be present in the pending state
+      // if it isn't, something broke in Apophis SDK
+      const uri = state.value?.uri;
+      if (!uri) return null;
+
+      if (isMobilePlatform()) {
+        // TODO: add specific WC URIs for different wallets
+        return (
+          <Section title="WalletConnect">
+            <button
+              type="button"
+              onClick={() => {
+                location.href = `wc:${uri}`;
+              }}
+            >
+              Open WalletConnect
+            </button>
+          </Section>
+        );
+      } else {
+        return (
+          <Section title="WalletConnect">
+            <p>Scan this QR code with your mobile wallet:</p>
+            <canvas ref={(el) => canvas.value = el} />
+          </Section>
+        );
+      }
+    case 'error': {
+      const error = state.value?.error;
+      if (!error) return null;
+      return (
+        <Section title="WalletConnect">
+          <p>Something went horribly wrong. <a href="#" onClick={e => {
+            e.preventDefault();
+            modals.showErrorModal(error);
+          }}>Check details.</a></p>
+        </Section>
+      );
+    }
+    case undefined: // undefined means the signer is initializing
+      return (
+        <Section title="WalletConnect">
+          <cosmos-loading-wrapper loading />
+        </Section>
+      );
+    default:
+      return null;
+  }
 }
 
 function detectPlatform(): Platform {

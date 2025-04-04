@@ -1,6 +1,8 @@
+import { signals } from '@apophis-sdk/core';
 import '..';
-import { modals } from '..';
+import { modals, toast } from '..';
 import { getNetworks } from '../internals';
+import { forgetSigner } from '../utils';
 
 # Overview
 Kiru's Cosmos Components are a collection of web components that I use to build
@@ -50,85 +52,28 @@ You may also use an import map to make imports consistent:
 </script>
 ```
 
-# Components
+## Signer Persistence
+Often, you will want to preserve which signer the user chose, and automatically
+attempt to reconnect to it next time they visit. This library automatically
+saves the signer choice in `localStorage`. However, it cannot store your networks,
+so you will need to handle reconnecting yourself:
 
-## Connect Boundary
-The `cosmos-connect-boundary` component switches between three different
-states based on whether the user has connected their wallet and/or signed in.
-Signing in is particularly useful for Dapps that communicate with a backend
-server, but is optional and defaults to false.
+```ts
+import { reconnectSigner } from '@kiruse/cosmos-components';
 
-It is a flow control component that provides no other UI and is completely
-unstyled. It is meant to be used together with your own UI components.
+const networks = [
+  // Your networks
+];
 
-It uses three slots to display your content. None of these slots provide default
-content.
-
-- `content`: Shown when the user has connected their wallet and signed in
-  (if required).
-- `connect`: Shown when the user has not yet connected their wallet.
-- `login`: Shown when the user has connected their wallet but still needs to
-  sign in.
-
-The login step is often not needed. Thus, if the `is-logged-in` attribute is
-not present or nullish, the `login` slot is never shown. Accordingly, if the
-`is-logged-in` attribute is false, the `connect` slot is shown after the user
-has connected their wallet. Otherwise, the `content` slot is shown.
-
-<cosmos-connect-boundary persist="true">
-  <div slot="content">
-    <pre>Thank you for connecting your wallet!</pre>
-  </div>
-  <div slot="connect">
-    <button
-      onClick={async () => {
-        modals.showWalletModal(await getNetworks());
-      }}
-    >Connect your Wallet</button>
-  </div>
-</cosmos-connect-boundary>
-
-```tsx
-<cosmos-connect-boundary persist="true">
-  <div slot="content">
-    <pre>Thank you for connecting your wallet!</pre>
-  </div>
-  <div slot="connect">
-    <pre>Please connect your wallet to continue.</pre>
-  </div>
-</cosmos-connect-boundary>
+reconnectSigner(networks); // Promise<boolean>
 ```
 
-The component will emit the `connected` event when the user connects their
-wallet. This can be used to automatically prompt the user to sign in.
+You can await this promise, but you typically don't need to. As the underlying
+SDK uses signals, if the reconnection was successful, the signer will be
+automatically propagated throughout your Dapp.
 
-## Toast
-
-Currently, Cosmos Components use our own Toast implementation. In the future,
-we will allow specifying an alternative Toast implementation for consistency
-across different systems. Click the button below to spawn a new toast.
-
-<button
-  onClick={() => toast.info('This is an informational toast.')}
->Spawn toast</button>
-
-```tsx
-<button onClick={() => toast.info('This is an informational toast.')}>Spawn toast</button>
-```
-
-These web components are built on the Shadow DOM. Thus, proper integration with
-your framework may be non-trivial. Most modern frameworks build on a VDOM, which
-is not directly compatible with the Shadow DOM. If you need to provide content
-to the Toast that is not just a simple string, you probably want to build a
-helper for your framework.
-
-### Error Link Toast
-The `toast.errorlink` function is a variation of the `toast.error` method that
-includes a link to open a `cosmos-modal-error` containing the error details.
-
-<button
-  onClick={() => toast.errorlink(new Error('This is a dummy error'), { message: 'Failed to connect wallet.' })}
->Spawn error link toast</button>
+Although this library uses `localStorage`, it checks if it is available first,
+so calling it during SSR should be safe.
 
 # TypeScript integration
 Generally, web components are compatible with JSX by design, as the support only
@@ -182,3 +127,39 @@ a callback function, so you can pass signals in directly, but may still have
 to rely on callbacks to update your signals.
 
 However, these components currently do not feed data back out to signals.
+
+# About Signers
+This library exposes a few `Signer` related persistence functions:
+
+- `rememberSigner(signer: Signer)`: Save this signer as the last used signer
+  in `localStorage`.
+- `forgetSigner()`: Remove the last used signer from `localStorage`.
+- `reconnectSigner(networks: Network[])`: Attempt to reconnect to the last
+  used signer, optionally filtered by the given networks.
+
+Further, there are two important signals in the Apophis SDK:
+
+- `signals.signer`: Currently connected signer. This must be set when you
+  change the signer yourself. The Wallet Modal will do this automatically.
+- `signals.network`: Active network. Although I believe Dapps should be
+  built chain-agnostic, a concept of "active network" still applies. it
+  is used, for example, to show the user's address. You will always need
+  to set this signal yourself.
+
+Other `computed` signals depend on both of these core signals. If something
+doesn't work as expected, ensure you have these two signals set correctly.
+
+## Disconnecting Signers
+When disconnecting a signer, you should do three things:
+
+```ts
+import { signals } from '@apophis-sdk/core';
+import { forgetSigner, toast } from '@kiruse/cosmos-components';
+
+async disconnect() {
+  forgetSigner();
+  await signals.signer.peek()?.disconnect();
+  signals.signer.value = undefined;
+  toast.info('Signer disconnected'); // Optional, but recommended
+}
+```
