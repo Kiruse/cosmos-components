@@ -1,0 +1,21 @@
+import { Meta, Canvas } from '@storybook/blocks';
+import * as SpinnerStories from './spinner.stories';
+
+<Meta of={SpinnerStories} />
+
+# Spinner
+A rudimentary spinner component to indicate asynchronous operations.
+
+<Canvas of={SpinnerStories.Default} />
+
+Used internally by:
+
+- `cosmos-modal-wallet`, while loading the QR code
+- `cosmos-estimate`, while querying the RPC for the gas estimate
+
+Feel free to use it as is, or replace it using the `CosmosComponents` factory. When replacing, make
+sure to support the `size` attribute with values `xxs`, and `md`. Other sizes may be used in the
+future.
+
+The default spinner has a minimum size of `80px` by `80px` on `md` size, and `16px` by `16px` on
+`xxs` size.

@@ -19,7 +19,7 @@ const meta: Meta<ComponentAttributes<typeof UserAddress>> = {
 export default meta;
 type Story = StoryObj;
 
-export const Info: Story = {
+export const Default: Story = {
   render: () => html`
     <cosmos-user-address>
       <span

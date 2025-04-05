@@ -2,6 +2,7 @@ import { useComputed, useSignalEffect } from "@preact/signals";
 import { defineComponent } from "../../webcomp.js";
 import { signals, Signer } from "@apophis-sdk/core";
 import { z } from "zod";
+import { useHostClassSwitch } from '../../hooks/useHostClassSwitch.js';
 
 export const ConnectBoundary = defineComponent({
   name: 'cosmos-connect-boundary',
@@ -14,9 +15,10 @@ export const ConnectBoundary = defineComponent({
   render: ({ self, attrs: { 'is-logged-in': isLoggedIn } }) => {
     const isConnected = useComputed(() => !!signals.signer.value);
 
+    const cls = useComputed(() => isConnected.value ? 'connected' : 'disconnected');
+    useHostClassSwitch(self, ['connected', 'disconnected'], cls);
+
     useSignalEffect(() => {
-      self.classList.remove('connected', 'disconnected');
-      self.classList.add(isConnected.value ? 'connected' : 'disconnected');
       if (isConnected.value) {
         self.dispatchEvent(new CustomEvent('connected', { detail: signals.signer.value }));
       }

@@ -40,7 +40,7 @@ chokidar.watch('package.json').on 'change', ->
 chokidar.watch('src/').on 'change', -> buildSources()
 
 Bun.serve
-  port: 8080
+  port: 8081
   fetch: (req) ->
     url = new URL req.url
     pathname = path.relative import.meta.dir, path.resolve url.pathname.slice 1

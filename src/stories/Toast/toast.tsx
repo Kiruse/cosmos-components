@@ -1,8 +1,9 @@
-import { useComputed, useSignalEffect } from "@preact/signals";
+import { useComputed } from "@preact/signals";
 import { z } from "zod";
 import { animate, ComponentAttributes, css, defineComponent } from "../../webcomp.js";
 import { useEffect } from "preact/hooks";
 import { modals } from "../modals/modals.js";
+import { useHostClassSwitch } from '../../hooks/useHostClassSwitch.js';
 
 type ToastAttributes = ComponentAttributes<typeof Toast>;
 
@@ -25,10 +26,8 @@ export const Toast = defineComponent({
   render: ({ self, attrs: { variant, lifespan, ...attrs } }) => {
     const title = useComputed(() => attrs.title.value || getDefaultTitle(variant.value ?? 'info'));
 
-    useSignalEffect(() => {
-      self.classList.remove('success', 'error', 'warning', 'info');
-      self.classList.add(variant.value ?? 'info');
-    });
+    const cls = useComputed(() => variant.value ?? 'info');
+    useHostClassSwitch(self, ['success', 'error', 'warning', 'info'], cls);
 
     useEffect(() => {
       const lifespanEl = self.shadowRoot?.querySelector('.lifespan') as HTMLElement;

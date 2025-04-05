@@ -141,7 +141,7 @@ export function defineComponent<T extends AttrDefinition, E extends EventDefinit
     }
 
     attributeChangedCallback(name: string, oldValue: any, newValue: any) {
-      this.updateAttr(name, this.#processAttr(attrsDesc[name as keyof T], newValue));
+      this.updateAttr(name, this.#processAttr(attrsDesc[name as keyof T], newValue ?? undefined));
     }
 
     /** Parse attributes & properties on the element. */

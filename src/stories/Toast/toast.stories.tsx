@@ -21,6 +21,9 @@ const meta: Meta<ComponentAttributes<typeof Toast>> = {
       defaultValue: 5,
     },
   }),
+  parameters: {
+    layout: 'centered',
+  },
   args: {},
 };
 

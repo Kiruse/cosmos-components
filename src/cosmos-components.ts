@@ -1,7 +1,7 @@
 import { Address } from './stories/Address/address.js';
 import { Balance } from './stories/Balance/balance.js';
 import { ConnectBoundary } from './stories/ConnectBoundary/connect-boundary.js';
-import { LoadingWrapper } from './stories/LoadingWrapper/loading-wrapper.js';
+import { Spinner } from './stories/Spinner/spinner.js';
 import { Toast } from './stories/Toast/toast.js';
 import { Tooltip } from './stories/Tooltip/tooltip.js';
 
@@ -24,7 +24,7 @@ export class CosmosComponents {
     Address,
     Balance,
     ConnectBoundary,
-    LoadingWrapper,
+    Spinner,
     Toast,
     Tooltip,
   ];

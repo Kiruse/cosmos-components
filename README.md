@@ -81,7 +81,7 @@ The `css` tagged literal does nothing, really. You might as well just pass a str
 Following are completed & planned components:
 
 - [x] Address
-- [ ] User Address
+- [x] User Address
 - [x] Balance
 - [ ] Account Balance
 - [x] Toasts
@@ -89,7 +89,6 @@ Following are completed & planned components:
 - [x] Wallet modal
 - [x] WalletConnect QR Code
 - [ ] Gas Estimate
-- [ ] Web3 Button
 - [x] Connect Boundary
 
 Following are meta features:

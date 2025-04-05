@@ -8,7 +8,7 @@ import { z } from "zod";
 import { css, defineComponent } from "../../webcomp.js";
 import './modal-base.js';
 import { getNetworkConfigSchema } from '../../internals.js';
-import '../LoadingWrapper/loading-wrapper.js';
+import '../Spinner/spinner.js';
 import { toast } from '../Toast/toast.js';
 import { rememberSigner } from '../../utils.js';
 import { modals } from './modals.js';
@@ -212,7 +212,7 @@ function WalletConnectSection({ self, close, canvas }: { self: HTMLElement, clos
     case undefined: // undefined means the signer is initializing
       return (
         <Section title="WalletConnect">
-          <cosmos-loading-wrapper loading />
+          <cosmos-spinner size="md" />
         </Section>
       );
     default:

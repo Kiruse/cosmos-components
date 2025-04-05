@@ -12,7 +12,7 @@ mw.use(...DefaultCosmWasmMiddlewares);
 registerCosmosSigners('21fa99318b912ecc1f79f0abf3c85ee5');
 
 getNetworks().then(networks => {
-  reconnectSigner(networks).then(console.log.bind(console));
+  reconnectSigner(networks);
   signals.network.value = networks[0];
 });
 

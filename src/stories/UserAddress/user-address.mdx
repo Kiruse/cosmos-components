@@ -1,0 +1,14 @@
+import { Meta, Canvas } from '@storybook/blocks';
+import * as UserAddressStories from './user-address.stories';
+
+<Meta of={UserAddressStories} />
+
+# UserAddress
+The `cosmos-user-address` component is a specialization of the `cosmos-address` component which
+shows the address of the currently connected user on the currently active network.
+
+<Canvas of={UserAddressStories.Default} />
+
+When not connected, the component will show slottable content. As these components are intended to
+be as unbiased as possible, the default content is simply a text label. You may want to substitute
+it for a button calling `modals.showWalletModal(...)`.
