@@ -5,7 +5,7 @@ import { useEffect } from "preact/hooks";
 import { modals } from "../modals/modals.js";
 import { useHostClassSwitch } from '../../hooks/useHostClassSwitch.js';
 
-type ToastAttributes = ComponentAttributes<typeof Toast>;
+export type ToastAttributes = ComponentAttributes<typeof Toast>;
 
 declare global {
   interface Window {
