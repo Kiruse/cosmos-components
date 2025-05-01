@@ -3,10 +3,12 @@ import { Cosmos } from "@apophis-sdk/cosmos";
 import { CSSProperties } from "preact/compat";
 import { z } from "zod";
 
+const pNetworks = Promise.all([
+  Cosmos.getNetworkFromRegistry('neutrontestnet'),
+]);
+
 export async function getNetworks() {
-  return await Promise.all([
-    Cosmos.getNetworkFromRegistry('neutrontestnet'),
-  ]);
+  return await pNetworks;
 }
 
 export function getNetworkConfigSchema() {
