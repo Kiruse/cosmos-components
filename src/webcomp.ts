@@ -15,12 +15,12 @@ type InstanceOf<T> = T extends new (...args: any[]) => infer R ? R : never;
 
 export type AttrDefinition = Record<string, zod.ZodSchema>;
 
-export interface WebComponentOptions<T extends AttrDefinition, E extends EventDefinition = {}> {
+export interface WebComponentOptions<A extends AttrDefinition, E extends EventDefinition = {}> {
   name: string;
-  attrs: T;
+  attrs: A;
   /** Whether to use the Shadow DOM. Defaults to `'open'`. Set to `'none'` to disable the Shadow DOM, but beware of CSS scoping issues. */
   shadow?: 'none' | 'open' | 'closed';
-  render: ComponentType<WebComponentProps<T>>;
+  render: ComponentType<WebComponentProps<A>>;
   /** When not using the Shadow DOM, you can use the `css` option to inject CSS into the document head. */
   css?: string;
   /** General purpose unmarshal function for attributes. By default, we use my other `@kiruse/marshal` package. */
@@ -29,10 +29,11 @@ export interface WebComponentOptions<T extends AttrDefinition, E extends EventDe
   events?: E;
 }
 
-export interface WebComponentProps<T extends AttrDefinition> {
+export interface WebComponentProps<A extends AttrDefinition> {
   /** Light root or shadow root of this component instance, depending on the `shadow` option passed to `defineComponent`. */
   self: HTMLElement;
-  attrs: AttrSignals<T>;
+  attrs: AttrSignals<A>;
+  /** Additional attributes passed to the HTML element that weren't recognized. */
   extraAttrs: any;
 }
 
@@ -89,23 +90,26 @@ type PickDefined<T> = {
   [K in keyof T]: undefined extends T[K] ? never : K;
 }[keyof T];
 
-export function defineComponent<T extends AttrDefinition, E extends EventDefinition = {}>({
+export function defineComponent<
+  A extends AttrDefinition,
+  E extends EventDefinition = {},
+>({
   name,
   unmarshal = defaultMarshaller.unmarshal,
   events = {} as E,
   ...options
-}: WebComponentOptions<T, E>) {
-  const attrsDesc: T = options.attrs ?? {} as any;
+}: WebComponentOptions<A, E>) {
+  const attrsDesc: A = options.attrs ?? {} as any;
 
   class Component extends HTMLElement {
     static observedAttributes = Object.keys(attrsDesc);
-    #attrs: Attrs<T>;
+    #attrs: Attrs<A>;
     #extraAttrs = {} as any;
     #eventHandlers = new Map<string, EventListener>();
 
     constructor() {
       super();
-      this.#attrs = Object.fromEntries(Object.entries(attrsDesc).map(([key, schema]) => [key, wrapAttr(schema, undefined)])) as Attrs<T>;
+      this.#attrs = Object.fromEntries(Object.entries(attrsDesc).map(([key, schema]) => [key, wrapAttr(schema, undefined)])) as Attrs<A>;
 
       // Set up event property getters/setters
       for (const eventName of Object.keys(events)) {
@@ -141,7 +145,7 @@ export function defineComponent<T extends AttrDefinition, E extends EventDefinit
     }
 
     attributeChangedCallback(name: string, oldValue: any, newValue: any) {
-      this.updateAttr(name, this.#processAttr(attrsDesc[name as keyof T], newValue ?? undefined));
+      this.updateAttr(name, this.#processAttr(attrsDesc[name as keyof A], newValue ?? undefined));
     }
 
     /** Parse attributes & properties on the element. */
@@ -160,7 +164,7 @@ export function defineComponent<T extends AttrDefinition, E extends EventDefinit
         return;
       }
 
-      const attr = this.#attrs[name as keyof T];
+      const attr = this.#attrs[name as keyof A];
 
       const parsed = attr.schema.safeParse(value);
       if (!parsed.success) {
@@ -168,12 +172,12 @@ export function defineComponent<T extends AttrDefinition, E extends EventDefinit
         return;
       }
 
-      attr.signal.value = parsed.data;
+      attr.signal.value = value;
     }
 
     render() {
       const useShadow = options.shadow !== 'none';
-      const attrSignals = Object.fromEntries(Object.entries(this.#attrs).map(([key, value]) => [key, value.signal])) as AttrSignals<T>;
+      const attrSignals = Object.fromEntries(Object.entries(this.#attrs).map(([key, value]) => [key, value.signal])) as AttrSignals<A>;
       const shadowRoot = this.#getShadowRoot();
       // MEMO: render will be deprecated in v11
       // refer to https://gist.github.com/developit/f4c67a2ede71dc2fab7f357f39cff28c when it becomes time to upgrade
@@ -210,7 +214,7 @@ export function defineComponent<T extends AttrDefinition, E extends EventDefinit
 
     #attr(name: string) {
       const value: unknown = this.getAttribute(name) ?? undefined;
-      const schema = attrsDesc[name as keyof T];
+      const schema = attrsDesc[name as keyof A];
       return this.#processAttr(schema, value);
     }
 
@@ -258,7 +262,7 @@ export function defineComponent<T extends AttrDefinition, E extends EventDefinit
     attrs: options.attrs,
     /** Events schema of the component. */
     events,
-  } satisfies ComponentDefinition<T, E>;
+  } satisfies ComponentDefinition<A, E>;
 }
 
 /** Rudimentary CSS template literal. Currently, it does nothing fancy, it just concatenates the strings and values.
