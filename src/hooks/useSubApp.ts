@@ -10,7 +10,7 @@ export interface SubAppOptions {
 /** A small utility to render preact content into a div for use in the lite or shadow DOM.
  * Cleans up after itself on unmount.
  */
-export function useSubApp(content: JSX.Element | (() => JSX.Element), { shadow = 'open' }: SubAppOptions = {}) {
+export function useSubApp(content: SubAppContent, { shadow = 'open' }: SubAppOptions = {}) {
   const root = useRef<HTMLDivElement>(document.createElement('div'));
 
   useEffect(() => {
