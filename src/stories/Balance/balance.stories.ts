@@ -18,6 +18,9 @@ const meta: Meta<ComponentAttributes<typeof Balance>> = {
       defaultValue: 3,
     },
   }),
+  parameters: {
+    layout: 'centered',
+  },
   args: {},
 };
 
