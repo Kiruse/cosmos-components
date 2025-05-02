@@ -124,7 +124,8 @@ export namespace tooltip {
     };
 
     const onMove = (e: MouseEvent) => {
-      if (trigger.contains(e.target as Node)) {
+      const path = e.composedPath();
+      if (path.includes(trigger)) {
         visible = true;
         if (!tooltip.classList.contains('active')) {
           show();
@@ -138,10 +139,12 @@ export namespace tooltip {
 
     return {
       destroy: () => {
-        document.removeEventListener('mousemove', onMove);
-        popper.destroy();
-        tooltip.remove();
-        unsub?.();
+        setTimeout(() => {
+          document.removeEventListener('mousemove', onMove);
+          popper.destroy();
+          tooltip.remove();
+          unsub?.();
+        }, 1);
       },
       update: () => {
         popper.update();

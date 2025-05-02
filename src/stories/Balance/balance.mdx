@@ -12,3 +12,24 @@ no other logic. It cannot retrieve balances from the blockchain or a backend.
 
 The `value` attribute can be a number, a formatted string, or a `Decimal` from
 my other package `@kiruse/decimal`.
+
+## Parts
+Balance exposes two parts:
+
+- `value` - The value of the balance.
+- `denom` - The denomination of the balance.
+
+These can be styled with CSS if needed, for example with:
+
+```css
+cosmos-balance::part(value) {
+  font-family: monospace;
+  font-size: 14px;
+  width: 80px;
+}
+
+cosmos-balance::part(denom) {
+  font-family: sans-serif;
+  font-size: 14px;
+}
+```

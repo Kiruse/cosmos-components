@@ -4,10 +4,10 @@
     "": {
       "name": "@kiruse/cosmos-components",
       "dependencies": {
-        "@apophis-sdk/core": "^0.3.0-rc.11",
-        "@apophis-sdk/cosmos": "^0.3.0-rc.11",
-        "@apophis-sdk/cosmos-signers": "^0.3.0-rc.11",
-        "@apophis-sdk/cosmwasm": "^0.3.0-rc.11",
+        "@apophis-sdk/core": "^0.3.0-rc.19",
+        "@apophis-sdk/cosmos": "^0.3.0-rc.19",
+        "@apophis-sdk/cosmos-signers": "^0.3.0-rc.19",
+        "@apophis-sdk/cosmwasm": "^0.3.0-rc.19",
         "@kiruse/decimal": "^1.0.5-fix.1",
         "@kiruse/marshal": "^0.2.0-rc.1",
         "@kiruse/typed-events": "^1.1.0",
@@ -50,17 +50,17 @@
 
     "@adraffy/ens-normalize": ["@adraffy/ens-normalize@1.11.0", "", {}, "sha512-/3DDPKHqqIqxUULp8yP4zODUY1i+2xvVWsv8A79xGWdCAG+8sb0hRh0Rk2QyOJUnnbyPUAZYcpBuRe3nS2OIUg=="],
 
-    "@apophis-sdk/core": ["@apophis-sdk/core@0.3.0-rc.11", "http://localhost:4873/@apophis-sdk/core/-/core-0.3.0-rc.11.tgz", { "dependencies": { "@kiruse/decimal": "^1.0.5-fix.1", "@kiruse/marshal": "^0.2.0-rc.1", "@kiruse/restful": "^0.2.3-fix.3", "@kiruse/typed-events": "^1.1.0", "@kristiandupont/recase": "^1.3.1", "@noble/hashes": "^1.7.1", "@preact/signals-core": "^1.8.0", "@scure/base": "^1.2.4", "cosmjs-types": "^0.9.0", "tslib": "^2.6.3" }, "peerDependencies": { "typescript": "^5.0.0" } }, "sha512-YWv5nOWzuNKo+jPF/GKmoLw9ofEbF5v5FwimOmsaNwIkiNVvrf6nToAYtCbuqUVhrnN3hyjg4SCE+ndAJLGmaQ=="],
+    "@apophis-sdk/core": ["@apophis-sdk/core@0.3.0-rc.19", "http://localhost:4873/@apophis-sdk/core/-/core-0.3.0-rc.19.tgz", { "dependencies": { "@kiruse/decimal": "^1.0.5-fix.1", "@kiruse/marshal": "^0.2.0-rc.1", "@kiruse/restful": "^0.2.3-fix.3", "@kiruse/typed-events": "^1.1.0", "@kristiandupont/recase": "^1.3.1", "@noble/hashes": "^1.7.1", "@preact/signals-core": "^1.8.0", "@scure/base": "^1.2.4", "cosmjs-types": "^0.9.0", "tslib": "^2.6.3" }, "peerDependencies": { "typescript": "^5.0.0" } }, "sha512-VT3X/lZF9E5ACcZsSv5LyAGIfRbRss4iOOLk5K9JmB1SX/vEAYBn1YBTLZMlUeuLMmiYn7jVqtGv+Oh1UAj24w=="],
 
-    "@apophis-sdk/cosmos": ["@apophis-sdk/cosmos@0.3.0-rc.11", "http://localhost:4873/@apophis-sdk/cosmos/-/cosmos-0.3.0-rc.11.tgz", { "dependencies": { "@noble/hashes": "^1.7.1", "@scure/base": "^1.2.4", "@scure/bip32": "^1.6.2", "@scure/bip39": "^1.5.4", "classnames": "^2.5.1", "tslib": "^2.6.3" }, "peerDependencies": { "@apophis-sdk/core": "0.3.0-rc.11", "@preact/signals": "^1.3.0", "preact": "^10.23.2", "typescript": "^5.0.0" } }, "sha512-7nAYHpGzaUIbRm2Fo1qvewrXMMyJRHth3XfYvZfesSLgY9OEkCzLHdJLNwmZ2B8QYBplqMh34fMT8EmgIlpWPQ=="],
+    "@apophis-sdk/cosmos": ["@apophis-sdk/cosmos@0.3.0-rc.19", "http://localhost:4873/@apophis-sdk/cosmos/-/cosmos-0.3.0-rc.19.tgz", { "dependencies": { "@noble/hashes": "^1.7.1", "@scure/base": "^1.2.4", "@scure/bip32": "^1.6.2", "@scure/bip39": "^1.5.4", "classnames": "^2.5.1", "tslib": "^2.6.3" }, "peerDependencies": { "@apophis-sdk/core": "0.3.0-rc.19", "@preact/signals": "^1.3.0", "preact": "^10.23.2", "typescript": "^5.0.0" } }, "sha512-e0H4pH5BhegViF7q7Uo6edGnJREyRoHwWBU46KWmpSQuTogvwWkNVR+IXfmPwfYYNXc2m3B3BHWujiMJeF6Fgg=="],
 
-    "@apophis-sdk/cosmos-signers": ["@apophis-sdk/cosmos-signers@0.3.0-rc.11", "http://localhost:4873/@apophis-sdk/cosmos-signers/-/cosmos-signers-0.3.0-rc.11.tgz", { "dependencies": { "@apophis-sdk/keplr-signer": "0.3.0-rc.11", "@apophis-sdk/walletconnect-signer": "0.3.0-rc.11", "tslib": "^2.6.3" } }, "sha512-heY76rN7SWZgnxYE/jXXACHzI57qKZj2uaf8MU80XsIAzLEfLuzulcyzzVY0tLsJkTZ6Ur0Fh80cL1vKxPX5Zw=="],
+    "@apophis-sdk/cosmos-signers": ["@apophis-sdk/cosmos-signers@0.3.0-rc.19", "http://localhost:4873/@apophis-sdk/cosmos-signers/-/cosmos-signers-0.3.0-rc.19.tgz", { "dependencies": { "@apophis-sdk/keplr-signer": "0.3.0-rc.19", "@apophis-sdk/walletconnect-signer": "0.3.0-rc.19", "tslib": "^2.6.3" } }, "sha512-hY9BkKNYd1QvZsLsPXHgLhfnTCS5CQlUmGT3oYCof3uvVgOCnY+UXgwdPc+/JqMkE2zbkbiSXsm3DxLvFIqRbQ=="],
 
-    "@apophis-sdk/cosmwasm": ["@apophis-sdk/cosmwasm@0.3.0-rc.11", "http://localhost:4873/@apophis-sdk/cosmwasm/-/cosmwasm-0.3.0-rc.11.tgz", { "dependencies": { "classnames": "^2.5.1", "tslib": "^2.6.3" }, "peerDependencies": { "@apophis-sdk/core": "0.3.0-rc.11", "@apophis-sdk/cosmos": "0.3.0-rc.11", "@preact/signals": "^1.3.0", "preact": "^10.23.2", "typescript": "^5.0.0" } }, "sha512-J5YsHuHnKlIS6hiZypHkzBRYmhIcjEzlcn/Cl9guDTI1m56e0l0JwgzBAgUsVvbl0vv4Pf4MQHRhwZNKiPdQog=="],
+    "@apophis-sdk/cosmwasm": ["@apophis-sdk/cosmwasm@0.3.0-rc.19", "http://localhost:4873/@apophis-sdk/cosmwasm/-/cosmwasm-0.3.0-rc.19.tgz", { "dependencies": { "classnames": "^2.5.1", "tslib": "^2.6.3" }, "peerDependencies": { "@apophis-sdk/core": "0.3.0-rc.19", "@apophis-sdk/cosmos": "0.3.0-rc.19", "@preact/signals": "^1.3.0", "preact": "^10.23.2", "typescript": "^5.0.0" } }, "sha512-jZAZt8JTXBB7d9qMWG/fG/xy/BCv9sU56pZ5eBVXrC7V8yjQURdlg33tHr1kfSIsXLQSpjXTDS/gUmsakDFK1A=="],
 
-    "@apophis-sdk/keplr-signer": ["@apophis-sdk/keplr-signer@0.3.0-rc.11", "http://localhost:4873/@apophis-sdk/keplr-signer/-/keplr-signer-0.3.0-rc.11.tgz", { "dependencies": { "@keplr-wallet/types": "^0.12.121", "long": "^5.2.3", "tslib": "^2.6.3" }, "peerDependencies": { "@apophis-sdk/core": "0.3.0-rc.11", "@apophis-sdk/cosmos": "0.3.0-rc.11", "typescript": "^5.0.0" } }, "sha512-QPTlPo905kG8cr4JT25JpbPSV3rW93ocPhEpOmfcjT8HZSY0Opda2af7VylFbbWnUPyosh8414l6+MSoHxG+pA=="],
+    "@apophis-sdk/keplr-signer": ["@apophis-sdk/keplr-signer@0.3.0-rc.19", "http://localhost:4873/@apophis-sdk/keplr-signer/-/keplr-signer-0.3.0-rc.19.tgz", { "dependencies": { "@keplr-wallet/types": "^0.12.121", "long": "^5.2.3", "tslib": "^2.6.3" }, "peerDependencies": { "@apophis-sdk/core": "0.3.0-rc.19", "@apophis-sdk/cosmos": "0.3.0-rc.19", "typescript": "^5.0.0" } }, "sha512-VCIvlPhkbwDL4womTCa7StO5ItrLL9cbEjaVDNWc97uPOIbHni5h+ulxH69py/ccsKgVBQg7Cs/KNZx4qwTT6A=="],
 
-    "@apophis-sdk/walletconnect-signer": ["@apophis-sdk/walletconnect-signer@0.3.0-rc.11", "http://localhost:4873/@apophis-sdk/walletconnect-signer/-/walletconnect-signer-0.3.0-rc.11.tgz", { "dependencies": { "@walletconnect/sign-client": "^2.16.2", "qrcode": "^1.5.4", "tslib": "^2.6.3" }, "peerDependencies": { "@apophis-sdk/core": "0.3.0-rc.11", "typescript": "^5.0.0" } }, "sha512-nJhLE09mEbulWqID08KwIcp3oWwWlEjnedmwp2jD5rV2qW3sY8uVVKPeqEIvL88Immz1WvCg4C1fm9eUPNgf/Q=="],
+    "@apophis-sdk/walletconnect-signer": ["@apophis-sdk/walletconnect-signer@0.3.0-rc.19", "http://localhost:4873/@apophis-sdk/walletconnect-signer/-/walletconnect-signer-0.3.0-rc.19.tgz", { "dependencies": { "@walletconnect/sign-client": "^2.16.2", "qrcode": "^1.5.4", "tslib": "^2.6.3" }, "peerDependencies": { "@apophis-sdk/core": "0.3.0-rc.19", "typescript": "^5.0.0" } }, "sha512-vnUVYaEoxhmi8L5HiZRmboI+2IZ36ltOU1qukQYFWe3k/G18m6vcNkW/V69hTF9si/4csLM0/pZVsu2/waVkDQ=="],
 
     "@babel/code-frame": ["@babel/code-frame@7.26.2", "", { "dependencies": { "@babel/helper-validator-identifier": "^7.25.9", "js-tokens": "^4.0.0", "picocolors": "^1.0.0" } }, "sha512-RJlIHRueQgwWitWgF8OdFYGZX328Ax5BCemNGlqHfplnRT9ESi8JkFlvaVYbS+UubVY6dpv87Fs2u5M29iNFVQ=="],
 

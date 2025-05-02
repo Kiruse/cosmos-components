@@ -35,10 +35,10 @@
     "prepack": "bun run build"
   },
   "dependencies": {
-    "@apophis-sdk/core": "^0.3.0-rc.11",
-    "@apophis-sdk/cosmos": "^0.3.0-rc.11",
-    "@apophis-sdk/cosmos-signers": "^0.3.0-rc.11",
-    "@apophis-sdk/cosmwasm": "^0.3.0-rc.11",
+    "@apophis-sdk/core": "^0.3.0-rc.19",
+    "@apophis-sdk/cosmos": "^0.3.0-rc.19",
+    "@apophis-sdk/cosmos-signers": "^0.3.0-rc.19",
+    "@apophis-sdk/cosmwasm": "^0.3.0-rc.19",
     "@kiruse/decimal": "^1.0.5-fix.1",
     "@kiruse/marshal": "^0.2.0-rc.1",
     "@kiruse/typed-events": "^1.1.0",

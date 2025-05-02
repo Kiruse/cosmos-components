@@ -1,0 +1,15 @@
+import { signals } from '@apophis-sdk/core'
+import { forgetSigner } from '../utils.js'
+
+# Miscellaneous Tidbits
+The contents of this document are not relevant to the library but to the documentation site itself.
+
+## Disconnecting your Wallet
+Various components in this Storybook change state depending on the wallet connection. You can use
+this button to disconnect your wallet again.
+
+<button disabled={!signals.signer.value} onClick={() => {
+  forgetSigner();
+  signals.signer.value = undefined;
+  location.reload();
+}}>Disconnect Wallet</button>

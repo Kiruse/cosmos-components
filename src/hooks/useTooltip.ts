@@ -1,36 +1,22 @@
 import { ReadonlySignal, useSignalEffect } from '@preact/signals';
-import { useEffect } from 'preact/hooks';
 import { type CreateTooltipOptions, tooltip } from '../stories/Tooltip/tooltip.js';
-import { type SubAppContent, type SubAppOptions, useSubApp } from './useSubApp.js';
+import { SubAppContent, useSubApp, type SubAppOptions } from './useSubApp.js';
+import { isSignalish } from '../webcomp.js';
 
 export function useTooltip(
-  trigger: HTMLElement | undefined,
-  content: SubAppContent,
+  trigger: ReadonlySignal<HTMLElement | undefined> | HTMLElement,
+  Component: SubAppContent,
   { shadow, ...options }: CreateTooltipOptions & SubAppOptions = {}
 ) {
-  const contentEl = useSubApp(content, { shadow });
+  const content = useSubApp(Component, { shadow });
 
-  useEffect(() => {
-    if (!trigger) return;
-
-    const el = tooltip.create(trigger, contentEl.current, options);
-    return () => {
-      el.destroy();
-    }
-  }, [trigger, options]);
-}
-
-export function useTooltipSignal(
-  trigger: ReadonlySignal<HTMLElement | undefined>,
-  tpl: ReadonlySignal<HTMLTemplateElement | undefined>,
-  { shadow, ...options }: CreateTooltipOptions & SubAppOptions = {}
-) {
   useSignalEffect(() => {
-    if (!trigger.value || !tpl.value) return;
+    const triggerEl = isSignalish(trigger) ? trigger.value : trigger;
+    if (!triggerEl) return;
 
-    const el = tooltip.create(trigger.value, tpl.value, options);
+    const tooltipInst = tooltip.create(triggerEl, content.current, options);
     return () => {
-      el.destroy();
-    }
+      tooltipInst.destroy();
+    };
   });
 }

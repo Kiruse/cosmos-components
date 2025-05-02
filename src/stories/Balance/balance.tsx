@@ -1,7 +1,8 @@
 import { Decimal } from "@kiruse/decimal";
-import { ReadonlySignal, useComputed } from "@preact/signals";
+import { ReadonlySignal, useComputed, useSignal } from "@preact/signals";
 import { z } from "zod";
 import { css, defineComponent } from "../../webcomp.js";
+import { useTooltip } from '../../hooks/useTooltip.js';
 
 declare module 'preact/jsx-runtime' {
   export namespace JSX {
@@ -26,11 +27,23 @@ export const Balance = defineComponent({
     decimals: z.optional(z.number()),
   },
   render: ({ attrs: { value, denom, decimals } }) => {
-    const displayValue = useComputed(() =>
-      Intl.NumberFormat().format(
-        parseFloat(Decimal.parse(value.value).rebase(decimals.value ?? 3).toString())
-      )
+    const valueEl = useSignal<HTMLSpanElement | undefined>();
+
+    const displayValue = useComputed(() => {
+      const decimal = Decimal.parse(value.value);
+      if (decimal.lt(new Decimal(1000, 6))) {
+        return '<' + Intl.NumberFormat().format(0.001000);
+      }
+      return Intl.NumberFormat(undefined, { maximumFractionDigits: decimals.value ?? 3 })
+        .format(decimal.toString() as `${number}`);
+    });
+
+    const longDisplayValue = useComputed(() =>
+      Intl.NumberFormat(undefined, { maximumFractionDigits: 10 })
+        .format(Decimal.parse(value.value).toString() as `${number}`)
     );
+
+    useTooltip(valueEl, <span class="cosmos-balance-long">{longDisplayValue}</span>, { shadow: 'none' });
 
     return (
       <>
@@ -46,9 +59,14 @@ export const Balance = defineComponent({
             text-align: left;
           }
         }`}</style>
-        <span part="value">{displayValue}</span>{' '}
+        <span part="value" ref={el => (valueEl.value = el ?? undefined)}>{displayValue}</span>{' '}
         <span part="denom">{denom}</span>
       </>
     );
   },
+  css: css`
+    .cosmos-balance-long {
+      font-family: var(--cosmos-font-monospace, monospace);
+    }
+  `,
 });

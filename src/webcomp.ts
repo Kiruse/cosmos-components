@@ -191,16 +191,6 @@ export function defineComponent<
       );
     }
 
-    override remove() {
-      super.remove();
-      render(null, options.shadow === 'none' ? this : this.shadowRoot!); // properly dismount
-      // Clean up event listeners
-      for (const [eventName, handler] of this.#eventHandlers) {
-        this.removeEventListener(eventName, handler);
-      }
-      this.#eventHandlers.clear();
-    }
-
     /** Emit a typed `CustomEvent`. */
     emit<Ev extends string & keyof E>(eventName: Ev, detail: zod.infer<E[Ev]>) {
       const schema = events[eventName];
