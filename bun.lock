@@ -4,7 +4,7 @@
     "": {
       "name": "@kiruse/cosmos-components",
       "dependencies": {
-        "@apophis-sdk/core": "^0.3.0-rc.19",
+        "@apophis-sdk/core": "^0.3.0",
         "@apophis-sdk/cosmos": "^0.3.0-rc.19",
         "@apophis-sdk/cosmos-signers": "^0.3.0-rc.19",
         "@apophis-sdk/cosmwasm": "^0.3.0-rc.19",
@@ -50,7 +50,7 @@
 
     "@adraffy/ens-normalize": ["@adraffy/ens-normalize@1.11.0", "", {}, "sha512-/3DDPKHqqIqxUULp8yP4zODUY1i+2xvVWsv8A79xGWdCAG+8sb0hRh0Rk2QyOJUnnbyPUAZYcpBuRe3nS2OIUg=="],
 
-    "@apophis-sdk/core": ["@apophis-sdk/core@0.3.0-rc.19", "http://localhost:4873/@apophis-sdk/core/-/core-0.3.0-rc.19.tgz", { "dependencies": { "@kiruse/decimal": "^1.0.5-fix.1", "@kiruse/marshal": "^0.2.0-rc.1", "@kiruse/restful": "^0.2.3-fix.3", "@kiruse/typed-events": "^1.1.0", "@kristiandupont/recase": "^1.3.1", "@noble/hashes": "^1.7.1", "@preact/signals-core": "^1.8.0", "@scure/base": "^1.2.4", "cosmjs-types": "^0.9.0", "tslib": "^2.6.3" }, "peerDependencies": { "typescript": "^5.0.0" } }, "sha512-VT3X/lZF9E5ACcZsSv5LyAGIfRbRss4iOOLk5K9JmB1SX/vEAYBn1YBTLZMlUeuLMmiYn7jVqtGv+Oh1UAj24w=="],
+    "@apophis-sdk/core": ["@apophis-sdk/core@0.3.0", "", { "dependencies": { "@kiruse/decimal": "^1.0.5-fix.1", "@kiruse/marshal": "^0.2.0-rc.1", "@kiruse/restful": "^0.2.3-fix.3", "@kiruse/typed-events": "^1.1.0", "@kristiandupont/recase": "^1.3.1", "@noble/hashes": "^1.7.1", "@preact/signals-core": "^1.8.0", "@scure/base": "^1.2.4", "cosmjs-types": "^0.9.0", "tslib": "^2.6.3" }, "peerDependencies": { "typescript": "^5.0.0" } }, "sha512-mWH8aWE/7iwnARWgw0BC6/Q6KXbwnSMuxeIZQFJTHn2nSJaBs2O2Gfu9Gc0avcrCZEFQj3qI5iIUJ2YCY0y+iA=="],
 
     "@apophis-sdk/cosmos": ["@apophis-sdk/cosmos@0.3.0-rc.19", "http://localhost:4873/@apophis-sdk/cosmos/-/cosmos-0.3.0-rc.19.tgz", { "dependencies": { "@noble/hashes": "^1.7.1", "@scure/base": "^1.2.4", "@scure/bip32": "^1.6.2", "@scure/bip39": "^1.5.4", "classnames": "^2.5.1", "tslib": "^2.6.3" }, "peerDependencies": { "@apophis-sdk/core": "0.3.0-rc.19", "@preact/signals": "^1.3.0", "preact": "^10.23.2", "typescript": "^5.0.0" } }, "sha512-e0H4pH5BhegViF7q7Uo6edGnJREyRoHwWBU46KWmpSQuTogvwWkNVR+IXfmPwfYYNXc2m3B3BHWujiMJeF6Fgg=="],
 

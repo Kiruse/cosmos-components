@@ -1,7 +1,7 @@
 {
   "name": "@kiruse/cosmos-components",
   "type": "module",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Kiru's Cosmos Web3 Components",
   "keywords": [
     "cosmos",
@@ -35,7 +35,7 @@
     "prepack": "bun run build"
   },
   "dependencies": {
-    "@apophis-sdk/core": "^0.3.0-rc.19",
+    "@apophis-sdk/core": "^0.3.0",
     "@apophis-sdk/cosmos": "^0.3.0-rc.19",
     "@apophis-sdk/cosmos-signers": "^0.3.0-rc.19",
     "@apophis-sdk/cosmwasm": "^0.3.0-rc.19",
