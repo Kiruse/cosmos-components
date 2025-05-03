@@ -88,7 +88,7 @@ Following are completed & planned components:
 - [x] Error modal
 - [x] Wallet modal
 - [x] WalletConnect QR Code
-- [ ] Gas Estimate
+- [x] Gas Estimate
 - [x] Connect Boundary
 
 Following are meta features:
@@ -98,5 +98,3 @@ Following are meta features:
 - [ ] Improve build script to bundle library files (w/o dependencies) for faster load times when using ECMA modules in the browser directly
 - [ ] Add doc comments to the components for IntelliSense. Requires changes to the build script.
 - [ ] Overhaul components documentation pages.
-
-Originally, my motivation for integrating this proposed manifest was to automate properties controls generation in Storybook. Instead, I will now simply generate the entire story code for every component based on the components & zod schemas directly.

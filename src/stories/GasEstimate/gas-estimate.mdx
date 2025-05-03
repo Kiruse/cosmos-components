@@ -1,0 +1,22 @@
+import { Meta, Canvas } from '@storybook/blocks';
+import * as GasEstimateStories from './gas-estimate.stories';
+
+<Meta of={GasEstimateStories} />
+
+# Gas Estimate Component
+Gas estimation is one of the most common tasks in Web 3. This component makes it easy when using the
+[Apophis SDK](https://docs.kiruse.dev/projects/apophis-sdk/introduction). It shows a rounded estimate
+of the gas required for a transaction. Upon hovering, it shows a tooltip with the exact gas value.
+
+<Canvas of={GasEstimateStories.Default} />
+
+Unlike EVM, unused gas is not refunded in Cosmos. Not enough gas, and a transaction will fail. Too
+much gas, and it will be wasted. Various factors can affect the final gas consumption, including
+state transitions since estimation and execution, but also the signature verification, as the estimate
+does not include a signature.
+
+Most Web 3 libraries, including Apophis, include a factor to account for this.
+
+Currently, this component only shows a generic error link upon estimation failure which opens an
+error modal. You can change the message shown in the error modal by specifying a custom formatter to
+`formatError.addFormatters`. In the future, this behavior may be changed and optimized.

@@ -72,7 +72,7 @@ export function formatError(error: any) {
 
 export namespace formatError {
   export function addFormatters(...newFormatters: ErrorFormatter[]) {
-    formatters.push(...newFormatters);
+    formatters.splice(0, 0, ...newFormatters);
     return () => {
       for (const formatter of newFormatters) {
         const idx = formatters.findIndex(formatter);
