@@ -1,7 +1,7 @@
 {
   "name": "@kiruse/cosmos-components",
   "type": "module",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Kiru's Cosmos Web3 Components",
   "keywords": [
     "cosmos",
@@ -36,9 +36,8 @@
   },
   "dependencies": {
     "@apophis-sdk/core": "^0.3.0",
-    "@apophis-sdk/cosmos": "^0.3.0-rc.19",
-    "@apophis-sdk/cosmos-signers": "^0.3.0-rc.19",
-    "@apophis-sdk/cosmwasm": "^0.3.0-rc.19",
+    "@apophis-sdk/cosmos": "^0.3.0",
+    "@apophis-sdk/cosmwasm": "^0.3.0",
     "@kiruse/decimal": "^1.0.5-fix.1",
     "@kiruse/marshal": "^0.2.0-rc.1",
     "@kiruse/typed-events": "^1.1.0",
@@ -50,6 +49,7 @@
     "zod": "^3.24.2"
   },
   "devDependencies": {
+    "@apophis-sdk/cosmos-signers": "^0.3.0",
     "@babel/generator": "^7.26.10",
     "@babel/traverse": "^7.26.10",
     "@chromatic-com/storybook": "^3.2.5",
