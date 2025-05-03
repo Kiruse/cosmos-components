@@ -32,7 +32,7 @@
     "build:components": "tsc && rm -rf dist/**/*.stories.*",
     "build:meta": "bun run build.coffee",
     "build:storybook": "storybook build",
-    "prepack": "bun run build"
+    "prepack": "bun run build:components"
   },
   "dependencies": {
     "@apophis-sdk/core": "^0.3.0",
