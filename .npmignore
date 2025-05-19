@@ -1,2 +1,5 @@
+assets/
 !dist/
 src/
+.storybook/
+storybook-static/
