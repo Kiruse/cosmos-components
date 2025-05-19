@@ -230,7 +230,6 @@ export function defineComponent<
   }
 
   if (!name.startsWith('cosmos-')) name = `cosmos-${name}`;
-  customElements.define(name, Component);
 
   // TODO: use signals to detect changes?
   if (options.css) {
