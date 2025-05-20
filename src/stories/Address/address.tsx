@@ -1,5 +1,5 @@
 import { trimAddress } from "@apophis-sdk/core";
-import { useComputed, useSignal, useSignalEffect } from "@preact/signals";
+import { useComputed } from "@preact/signals";
 import { z } from "zod";
 import { useTooltip } from "../../hooks/useTooltip.js";
 import { ComponentAttributes, css, defineComponent } from "../../webcomp.js";

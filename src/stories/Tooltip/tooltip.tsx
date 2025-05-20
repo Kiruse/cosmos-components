@@ -15,6 +15,7 @@ export const Tooltip = defineComponent({
       <>
         <style>{css`
           :host {
+            width: 24rem;
             padding: calc(var(--cosmos-spacing, 8px));
             border-radius: calc(var(--cosmos-roundness, 4px));
             color:rgb(200, 197, 219);
@@ -24,6 +25,11 @@ export const Tooltip = defineComponent({
             font-size: var(--cosmos-base-font-size, 12px);
             line-height: 1.2;
             z-index: var(--cosmos-tooltip-z, 999);
+
+            > * {
+              width: fit-content;
+              margin: 0 auto;
+            }
           }
         `}</style>
         <slot name="content">
@@ -72,27 +78,10 @@ export namespace tooltip {
       if (isSignalish(options.placement))
         placement = options.placement.peek();
 
-      let offset: [number, number];
-      switch (placement) {
-        case 'top':
-          offset = [0, -8];
-          break;
-        case 'left':
-          offset = [-8, 0];
-          break;
-        case 'right':
-          offset = [8, 0];
-          break;
-        default:
-        case 'bottom':
-          offset = [0, 8];
-          break;
-      }
-
       return {
         placement: placement ?? 'bottom',
         modifiers: [
-          { name: 'offset', options: { offset } },
+          { name: 'offset', options: { offset: [0, 8] } },
           { name: 'flip', enabled: true },
           { name: 'eventListeners', enabled: visible },
         ],
