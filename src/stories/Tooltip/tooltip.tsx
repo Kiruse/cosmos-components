@@ -15,7 +15,7 @@ export const Tooltip = defineComponent({
       <>
         <style>{css`
           :host {
-            width: 24rem;
+            min-width: 24rem;
             padding: calc(var(--cosmos-spacing, 8px));
             border-radius: calc(var(--cosmos-roundness, 4px));
             color:rgb(200, 197, 219);

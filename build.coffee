@@ -46,16 +46,17 @@ export buildMeta = ->
   ]
 export buildJsxTypes = (components) ->
   dts  = "import type { ComponentAttributes, ComponentEvents } from './webcomp.js';\n"
-  dts += "import type { ComponentChildren } from 'preact';\n"
   dts += "import type { #{comp.component} } from '#{comp.module.file.replace(/^.\/src\//, './')}';\n" for comp in components
   dts += '\n'
   dts += [
-    "interface CosmosElements {"
-    ("  '#{comp.element}': ComponentAttributes<typeof #{comp.component}> & Partial<ComponentEvents<typeof #{comp.component}>> & { children?: ComponentChildren };" for comp in components)...
+    "interface CosmosElements<IntrinsicAttrs = {}> {"
+    ("  '#{comp.element}': ComponentAttributes<typeof #{comp.component}> & Partial<ComponentEvents<typeof #{comp.component}>> & IntrinsicAttrs;" for comp in components)...
     "}"
     ""
     "declare global {"
-    "  interface JSX extends CosmosElements {}"
+    "  namespace JSX {"
+    "    interface IntrinsicElements extends CosmosElements {}"
+    "  }"
     "}"
   ].join '\n'
   await fs.writeFile 'dist/elements.d.ts', dts
