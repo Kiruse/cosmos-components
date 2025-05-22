@@ -134,6 +134,14 @@ export const ModalBase = defineComponent({
               padding: var(--cosmos-spacing, 8px);
             }
           }
+
+          @media (max-width: 768px) {
+            .modal {
+              width: calc(100% - 4px);
+              min-width: unset;
+              max-width: unset;
+            }
+          }
         `}</style>
         <div ref={setBackdrop} class="backdrop" part="backdrop">
           <div class="upper padding" aria-hidden="true" />

@@ -249,6 +249,12 @@ cosmos-modal-base::part(modal) {
   min-width: 450px;
 }
 
+@media (max-width: 768px) {
+  cosmos-modal-base::part(modal) {
+    min-width: unset;
+  }
+}
+
 h1 {
   font-weight: 500;
 }
@@ -300,8 +306,9 @@ button {
   opacity: 0.8;
 
   &:disabled {
-    filter: grayscale(0.8);
+    filter: grayscale(0.9);
     cursor: not-allowed;
+    opacity: 0.5;
   }
 
   &:not(:disabled):hover {
