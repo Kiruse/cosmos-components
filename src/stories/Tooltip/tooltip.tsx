@@ -61,6 +61,8 @@ export namespace tooltip {
     const tooltip = document.createElement('cosmos-tooltip');
     Object.assign(tooltip, options);
     content.setAttribute('slot', 'content');
+    content.style.width = 'fit-content';
+    content.style.margin = '0 auto';
     tooltip.appendChild(content);
 
     let container = document.getElementById('tooltip-container');

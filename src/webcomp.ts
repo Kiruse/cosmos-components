@@ -109,7 +109,23 @@ export function defineComponent<
 
     constructor() {
       super();
-      this.#attrs = Object.fromEntries(Object.entries(attrsDesc).map(([key, schema]) => [key, wrapAttr(schema, undefined)])) as Attrs<A>;
+      this.#attrs = Object.fromEntries(Object.entries(attrsDesc).map(
+        ([key, schema]) => [
+          key,
+          {
+            signal: signal(undefined),
+            schema,
+          },
+        ],
+      )) as Attrs<A>;
+
+      // Set up property getters/setters for attributes
+      Object.keys(attrsDesc).forEach((key) => {
+        Object.defineProperty(this, key, {
+          get: () => this.#attrs[key].signal.peek(),
+          set: (value) => this.updateAttr(key, value),
+        });
+      });
 
       // Set up event property getters/setters
       for (const eventName of Object.keys(events)) {
@@ -151,10 +167,8 @@ export function defineComponent<
     /** Parse attributes & properties on the element. */
     parseAttrs() {
       for (const attr in attrsDesc) {
-        const value: unknown = (this as any)[attr] ?? this.#attr(attr);
-        //@ts-ignore
-        this.#attrs[attr] = wrapAttr(attrsDesc[attr], value);
-        this.updateAttr(attr, value);
+        if (!this.hasAttribute(attr)) continue;
+        this.updateAttr(attr, this.#attr(attr));
       }
     }
 
@@ -303,13 +317,6 @@ function kebabToPascal(kebab: string): string {
     .split('-')
     .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
     .join('');
-}
-
-function wrapAttr<T>(schema: zod.ZodSchema, initialValue: T | Signal<T>) {
-  return {
-    signal: isSignalish(initialValue) ? initialValue : signal(initialValue),
-    schema,
-  };
 }
 
 const getFirstStyleElem = () => document.head.querySelector('style') ?? document.head.querySelector('link[rel="stylesheet"]');

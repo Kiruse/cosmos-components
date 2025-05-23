@@ -43,7 +43,7 @@ export const Balance = defineComponent({
         .format(Decimal.parse(value.value).toString() as `${number}`)
     );
 
-    useTooltip(valueEl, <span class="cosmos-balance-long">{longDisplayValue}</span>, { shadow: 'none' });
+    useTooltip(valueEl, <span class="cosmos-balance-long">Exact: <>{longDisplayValue}</> <>{denom}</></span>, { shadow: 'none' });
 
     return (
       <>
