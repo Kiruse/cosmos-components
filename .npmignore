@@ -3,3 +3,4 @@ assets/
 src/
 .storybook/
 storybook-static/
+tsconfig.json
