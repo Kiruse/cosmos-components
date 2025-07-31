@@ -100,8 +100,9 @@ export function defineComponent<
   ...options
 }: WebComponentOptions<A, E>) {
   const attrsDesc: A = options.attrs ?? {} as any;
+  const base = typeof HTMLElement === 'undefined' ? (class {} as Ctor) : HTMLElement;
 
-  class Component extends HTMLElement {
+  class Component extends base {
     static observedAttributes = Object.keys(attrsDesc);
     #attrs: Attrs<A>;
     #extraAttrs = {} as any;
@@ -246,7 +247,7 @@ export function defineComponent<
   if (!name.startsWith('cosmos-')) name = `cosmos-${name}`;
 
   // TODO: use signals to detect changes?
-  if (options.css) {
+  if (typeof document !== 'undefined' && options.css) {
     const style = document.createElement('style');
     style.textContent = options.css ?? '';
     const firstStyleElem = getFirstStyleElem();

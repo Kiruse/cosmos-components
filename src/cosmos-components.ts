@@ -42,6 +42,8 @@ export class CosmosComponents {
   constructor(public readonly components: ComponentRecord[]) {}
 
   register() {
+    // silently ignore in SSR
+    if (typeof customElements === 'undefined') return;
     for (const component of this.components) {
       customElements.define(component.name, component.Component);
     }
