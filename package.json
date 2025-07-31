@@ -1,7 +1,7 @@
 {
   "name": "@kiruse/cosmos-components",
   "type": "module",
-  "version": "0.1.9",
+  "version": "0.1.10",
   "description": "Kiru's Cosmos Web3 Components",
   "keywords": [
     "cosmos",

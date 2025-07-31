@@ -74,50 +74,6 @@ automatically propagated throughout your Dapp.
 Although this library uses `localStorage`, it checks if it is available first,
 so calling it during SSR should be safe.
 
-# TypeScript integration
-Generally, web components are compatible with JSX by design, as the support only
-depends on the browser, not your framework. However, TypeScript is a different
-story, as TypeScript is only aware of the standard elements, not custom elements.
-Your code will work even if TypeScript complains.
-
-This library ships with TypeScript typings for React & Preact. In the future, it
-may be even easier to integrate custom elements as the web standards evolve. But
-until then, individual frameworks need to be integrated directly.
-
-To integrate with React or Preact, simply import the typings:
-
-```tsx
-import '@kiruse/cosmos-components/react';
-// or
-import '@kiruse/cosmos-components/preact';
-```
-
-For other frameworks, you may need to define the types yourself. For this, this
-library exports the `CosmosElements` interface, which you can use together with
-interface merging in an ambient module declaration.
-
-For example, create a `global.d.ts` file in your project root:
-
-```ts
-// global.d.ts
-import { CosmosElements } from '@kiruse/cosmos-components';
-
-declare module 'react/jsx-runtime' {
-  namespace JSX {
-    interface IntrinsicElements extends CosmosElements {}
-  }
-}
-
-declare module 'preact/jsx-runtime' {
-  namespace JSX {
-    interface IntrinsicElements extends CosmosElements {}
-  }
-}
-```
-
-The above snippet is how React & Preact are actually integrated with these
-components.
-
 # Caveat about Signals
 While you can pass in signals to these components, your framework may unwrap
 the signal into a plain value. Preact does this, for example. Generally,
